@@ -16,7 +16,9 @@ const SignUp: FC = () => {
     { country: "JPN", code: "+81" },
   ];
 
-  const handleChangeSelect: ChangeEventHandler<HTMLSelectElement> = ({target: {value}}) => {
+  const handleChangeSelect: ChangeEventHandler<HTMLSelectElement> = ({
+    target: { value },
+  }) => {
     setCode(value);
   };
 
@@ -87,12 +89,19 @@ const SignUp: FC = () => {
                 );
               })}
             </select>
-            <input
-              type="text"
-              className="w-full border-b-2 border-slate-400 text-slate-500 py-[2px] focus:border-b-red-500 focus:outline-none placeholder:text-slate-500"
-              required
-              placeholder={`${code}`}
-            />
+            <div className="flex items-center justify-end space-x-3 w-full text-center">
+              <span className="border-b-2 border-red-500 text-red-500">
+                {code}{" "}
+              </span>
+              <div className="w-full">
+                <input
+                  type="text"
+                  className="w-full border-b-2 border-slate-400 text-slate-500 py-[2px] focus:border-b-red-500 focus:outline-none placeholder:text-slate-500"
+                  required
+                  placeholder="Mobile No."
+                />
+              </div>
+            </div>
           </div>
         </div>
         <div className="flex flex-col space-y-4">

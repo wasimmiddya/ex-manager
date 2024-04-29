@@ -1,0 +1,97 @@
+import { ChangeEventHandler, FC, useState } from "react";
+import { data, searchByOptions } from "../constants";
+import { FaEye } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
+
+const UserDashboard: FC = () => {
+  const [searchOprion, setSearchOption] = useState(searchByOptions[0]);
+
+  const handleSelectInputChange: ChangeEventHandler<HTMLSelectElement> = ({
+    target: { value },
+  }) => {
+    setSearchOption(value);
+  };
+
+  return (
+    <div className="bg-white w-[90%] px-10 py-7 mx-auto rounded-2xl">
+      <div className=" flex justify-between items-center">
+        <div className="space-x-4">
+          <select
+            name="searchBy"
+            onChange={handleSelectInputChange}
+            className="bg-red-500 text-white font-semibold rounded focus:outline-2 focus:outline-red-400 py-0.5"
+          >
+            {searchByOptions.map((elem, id) => (
+              <option key={id} value={elem} className="bg-white text-black">
+                {elem}
+              </option>
+            ))}
+          </select>
+          <input
+            type="search"
+            placeholder={`🔍Search by ${searchOprion}`}
+            className="border-2 border-slate-400 rounded focus:border-red-500 focus:outline-none p-0.5"
+          />
+        </div>
+        <div>
+          <button className="py-1 px-4 rounded bg-red-500 text-white font-semibold font-montserrat">
+            <NavLink to={"/dashboard/new-request"}>New Request</NavLink>
+          </button>
+        </div>
+      </div>
+      <div>
+        <table className="w-full">
+          <caption className="font-comfortaa mb-4 text-4xl text-slate-600 font-bold">
+            Requests <span className="text-red-500 ">Table</span>{" "}
+          </caption>
+          <thead className="text-slate-600 font-montserrat bg-white ">
+            <tr>
+              <th className="text-left py-2 border-b-2 border-red-500">
+                Expenditures
+              </th>
+              <th className="text-left py-2 border-b-2 border-red-500">
+                Submitted Date
+              </th>
+              <th className="text-left py-2 border-b-2 border-red-500">
+                Amount Claimed
+              </th>
+              <th className="text-left py-2 border-b-2 border-red-500">
+                Amount Approved
+              </th>
+              <th className="text-left py-2 border-b-2 border-red-500">
+                Approval Date
+              </th>
+              <th className="text-left py-2 border-b-2 border-red-500">
+                Status
+              </th>
+              <th className="text-center py-2 border-b-2 border-red-500">
+                View
+              </th>
+            </tr>
+          </thead>
+          <tbody className="mt-4 h-12 text-slate-500 font-montserrat">
+            {data.map((elem) => (
+              <tr key={elem.id}>
+                <td className="py-2">{elem.expenditure}</td>
+                <td className="py-2">{elem.subDate}</td>
+                <td className="py-2">${elem.amtClaimed}</td>
+                <td className="py-2">${elem.amtApproved}</td>
+                <td className="py-2">{elem.approvDate}</td>
+                <td className="py-2">{elem.status}</td>
+                <td className="flex justify-center">
+                  <button>
+                    {
+                      <FaEye className="w-7 mt-2 bg-red-500 rounded p-1 text-white text-xl" />
+                    }
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default UserDashboard;

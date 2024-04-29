@@ -5,9 +5,12 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AuthLayout from "./layouts/AuthLayout.tsx";
 import SignIn from "./components/SignIn.tsx";
-import Dashboard from "./pages/Dashboard.tsx";
 import SignUp from "./components/SignUp.tsx";
 import Welcome from "./components/Welcome.tsx";
+import DashboardLayout from "./layouts/DashboardLayout.tsx";
+import UserDashboard from "./pages/UserDashboard.tsx";
+import AdminDashboard from "./pages/AdminDashboard.tsx";
+import NewRequest from "./components/NewRequest.tsx";
 
 
 const router = createBrowserRouter(
@@ -36,7 +39,21 @@ const router = createBrowserRouter(
         },
         {
           path: "dashboard",
-          element: <Dashboard />
+          element: <DashboardLayout />,
+          children: [
+            {
+              path: "user",
+              element: <UserDashboard />
+            },
+            {
+              path: "admin",
+              element: <AdminDashboard />
+            },
+            {
+              path: "new-request",
+              element: <NewRequest />
+            }
+          ]
         }
       ]
     }
