@@ -11,6 +11,7 @@ import DashboardLayout from "./layouts/DashboardLayout.tsx";
 import UserDashboard from "./pages/UserDashboard.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import NewRequest from "./components/NewRequest.tsx";
+import UserRequestView from "./components/UserRequestView.tsx";
 
 
 const router = createBrowserRouter(
@@ -52,6 +53,10 @@ const router = createBrowserRouter(
             {
               path: "new-request",
               element: <NewRequest />
+            },
+            {
+              path: "view-user-req/:id",
+              element: <UserRequestView />
             }
           ]
         }

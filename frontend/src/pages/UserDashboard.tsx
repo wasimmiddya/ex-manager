@@ -1,6 +1,7 @@
 import { ChangeEventHandler, FC, useState } from "react";
 import { data, searchByOptions } from "../constants";
 import { FaEye } from "react-icons/fa";
+import { BiSolidReceipt } from "react-icons/bi";
 import { NavLink } from "react-router-dom";
 
 const UserDashboard: FC = () => {
@@ -13,7 +14,7 @@ const UserDashboard: FC = () => {
   };
 
   return (
-    <div className="bg-white w-[90%] px-10 py-7 mx-auto rounded-2xl">
+    <div className="bg-white  px-10 py-7 mx-auto rounded-2xl">
       <div className=" flex justify-between items-center">
         <div className="space-x-4">
           <select
@@ -50,16 +51,19 @@ const UserDashboard: FC = () => {
                 Expenditures
               </th>
               <th className="text-left py-2 border-b-2 border-red-500">
-                Submitted Date
+                Receipts
+              </th>
+              <th className="text-left py-2 border-b-2 border-red-500">
+                Submitted On
+              </th>
+              <th className="text-left py-2 border-b-2 border-red-500">
+                Approved On
               </th>
               <th className="text-left py-2 border-b-2 border-red-500">
                 Amount Claimed
               </th>
               <th className="text-left py-2 border-b-2 border-red-500">
                 Amount Approved
-              </th>
-              <th className="text-left py-2 border-b-2 border-red-500">
-                Approval Date
               </th>
               <th className="text-left py-2 border-b-2 border-red-500">
                 Status
@@ -73,15 +77,22 @@ const UserDashboard: FC = () => {
             {data.map((elem) => (
               <tr key={elem.id}>
                 <td className="py-2">{elem.expenditure}</td>
+                <td>
+                  <button>
+                    <BiSolidReceipt className="ml-7 hover:text-red-500 text-lg" />
+                  </button>
+                </td>
                 <td className="py-2">{elem.subDate}</td>
+                <td className="py-2">{elem.approvDate}</td>
                 <td className="py-2">${elem.amtClaimed}</td>
                 <td className="py-2">${elem.amtApproved}</td>
-                <td className="py-2">{elem.approvDate}</td>
                 <td className="py-2">{elem.status}</td>
                 <td className="flex justify-center">
                   <button>
                     {
-                      <FaEye className="w-7 mt-2 bg-red-500 rounded p-1 text-white text-xl" />
+                      <NavLink to={`/dashboard/view-user-req/${elem.id}`}>
+                        <FaEye className="w-7 mt-2 bg-red-500 rounded p-1 text-white text-xl" />
+                      </NavLink>
                     }
                   </button>
                 </td>

@@ -15,8 +15,8 @@ const DashboardLayout: FC = () => {
   });
 
   return (
-    <div>
-      <div className="my-10 mx-20 flex items-center space-x-10">
+    <div className="mx-20">
+      <div className="my-10 flex items-center space-x-10">
         <div className="py-4 px-10 bg-white rounded-md text-center text-slate-600 ">
           <span className="pb-2 text-2xl font-bold font-comfortaa">
             Reports <span className="text-red-500">{data.length}</span>
@@ -36,7 +36,7 @@ const DashboardLayout: FC = () => {
           <div className="h-1 mt-2 bg-red-500 rounded-3xl w-full" />
         </div>
       </div>
-      <div>
+      <div >
         <Outlet />
       </div>
     </div>
