@@ -40,3 +40,48 @@ export const data = [
         status: "Rejected",
     },
 ]
+
+
+export const searchReportOption = ["ENAME", "EID", "STATUS"]
+export const reports = [
+    {
+        id: nanoid(),
+        emp_name: "Zeesan Tarafdar",
+        emp_id: "zeesan3@gmail.com",
+        sub_date: "06/11/2024",
+        amt_claimed: "49.00",
+        status: "Pending"
+    },
+    {
+        id: nanoid(),
+        emp_name: "Mr.Sohan Shaw",
+        emp_id: "mrshaw69@gmail.com",
+        sub_date: "07/24/2024",
+        amt_claimed: "25.00",
+        status: "Approved"
+    },
+    {
+        id: nanoid(),
+        emp_name: "Koustav Manna",
+        emp_id: "manna44@gmail.com",
+        sub_date: "02/30/2024",
+        amt_claimed: "100.00",
+        status: "Pending"
+    },
+    {
+        id: nanoid(),
+        emp_name: "Pralay Giri",
+        emp_id: "giri153@gmail.com",
+        sub_date: "08/06/2024",
+        amt_claimed: "90.00",
+        status: "Pending"
+    },
+    {
+        id: nanoid(),
+        emp_name: "Wasim Raja",
+        emp_id: "middya34@gmail.com",
+        sub_date: "04/12/2024",
+        amt_claimed: "45.00",
+        status: "Pending"
+    },
+]

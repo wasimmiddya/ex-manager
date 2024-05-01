@@ -12,6 +12,7 @@ import UserDashboard from "./pages/UserDashboard.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import NewRequest from "./components/NewRequest.tsx";
 import UserRequestView from "./components/UserRequestView.tsx";
+import AdminReportView from "./components/AdminReportView.tsx";
 
 
 const router = createBrowserRouter(
@@ -57,6 +58,10 @@ const router = createBrowserRouter(
             {
               path: "view-user-req/:id",
               element: <UserRequestView />
+            },
+            {
+              path: "view-admin-rep/:id",
+              element: <AdminReportView />
             }
           ]
         }
