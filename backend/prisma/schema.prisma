@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+// ---------User Schema Defined------------
+model User {
+  id String @id @default(cuid())
+  fname String 
+  lname String
+  full_name String
+  email String @unique
+  password String
+  role Role @unique
+  avater String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  request RequestOfUser[]
+}
+
+// ---------Role Enums Defined------------
+enum Role {
+  USER
+  ADMIN
+}
+
+
+// ---------User Request model or schema Defined------------
+model Request {
+  id Int @id @default(autoincrement())
+  expenditure String
+  submitted_on String
+  amount_claimed Float
+  amount_approved Float
+  receipt String 
+  approval_date String
+  status Status
+  user RequestOfUser[]
+}
+
+// ---------Status Enums Defined------------
+enum Status {
+  Pending
+  Approved
+  Rejected
+}
+
+
+// ---------Many-to-Many relation model or schema defined------------
+model RequestOfUser {
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  request Request @relation(fields: [reqId], references: [id])
+  reqId Int
+  assignedAt DateTime @default(now())
+  @@id([userId, reqId])
+}
