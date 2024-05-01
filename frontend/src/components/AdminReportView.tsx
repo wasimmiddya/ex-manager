@@ -21,7 +21,6 @@ const AdminReportView: FC = () => {
           <Field heading="Employee ID" label="wasim33@gmail.com" />
           <Field heading="Submitted On" label="06/23/2024" />
           <Field heading="Amount Claimed" label="$30.00" />
-          {/* <Field heading="Approved On" label="$25/04/2024" /> */}
           <Field heading="Status" label="Approved" />
         </div>
 
