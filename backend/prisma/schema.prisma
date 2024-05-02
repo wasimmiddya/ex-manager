@@ -19,11 +19,12 @@ model User {
   id String @id @default(cuid())
   fname String 
   lname String
-  full_name String
+  full_name String?
   email String @unique
   password String
-  role Role @unique
+  role Role 
   avater String
+  accessToken String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   request RequestOfUser[]
