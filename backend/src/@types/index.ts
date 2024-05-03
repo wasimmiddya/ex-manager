@@ -1,3 +1,4 @@
+import { UploadApiResponse } from 'cloudinary';
 import {Request} from 'express'
 
 export type ValidateUserType = {
@@ -5,7 +6,7 @@ export type ValidateUserType = {
     password: string;
 };
 
-export enum Role {
+export enum UserRole {
     USER,
     ADMIN
 }
@@ -14,7 +15,7 @@ export type AccessTokenUserType = {
     id: string
     full_name: string
     email: string
-    role: Role
+    role: UserRole
 }
 
 export type RequestBodyUser = {
@@ -23,11 +24,11 @@ export type RequestBodyUser = {
     email: string,
     password: string,
     confirm_password: string
-    role: Role
-    avater?: string
+    role: UserRole
+    avater?: string | UploadApiResponse
 }
 
 export interface TypedRequest<T> extends Request {
-    body: RequestBodyUser,
-    files: FileList
+    body: T,
+    files: any
 }

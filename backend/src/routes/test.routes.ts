@@ -8,7 +8,7 @@ import { testApi } from "../controllers/test.conterollers";
 
 
 // ------------open routes defined---------------
-router.route("/test").get(testApi) // for testing the api 
+router.route("/api-test").get(testApi) // for testing the api 
 
 
 
