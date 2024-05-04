@@ -24,7 +24,7 @@ model User {
   password String
   role Role 
   avater String
-  accessToken String?
+  refreshToken String? @db.LongText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   request RequestOfUser[]

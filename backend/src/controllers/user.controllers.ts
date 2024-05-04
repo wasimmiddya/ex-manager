@@ -9,15 +9,10 @@ import { ApiResponse } from "../utils/api_response.utils";
 
 // ---------------Controller for handling user registration-----------------
 const registerUser = asyncHandler(
-    async (
-        req: TypedRequest<RequestBodyUser>,
-        res: Response,
-        next: NextFunction
-    ) => {
+    async (req: TypedRequest<RequestBodyUser>, res: Response) => {
         // checking if all the fields are filled up or not
         const { fname, lname, email, password, confirm_password, role } =
             req.body;
-        
 
         // if some of the fields send by the user in request body is empty, then throw api error
         if (
@@ -41,7 +36,10 @@ const registerUser = asyncHandler(
         });
 
         if (isUserExisted) {
-            throw new ApiError(401, "User with this email address is already exist.");
+            throw new ApiError(
+                401,
+                "User with this email address is already exist."
+            );
         }
 
         let avater = null;
@@ -53,7 +51,6 @@ const registerUser = asyncHandler(
         }
 
         console.log(avater?.secure_url);
-        
 
         // create new user in the database
         const user = await prisma.user.create({
@@ -73,6 +70,8 @@ const registerUser = asyncHandler(
             },
         });
 
+        
+
         if (!user) {
             throw new ApiError(
                 500,
@@ -86,4 +85,18 @@ const registerUser = asyncHandler(
     }
 );
 
-export { registerUser };
+const signInUser = asyncHandler(
+    async (req: TypedRequest<{ email: string }>, res: Response) => {
+        const token = await prisma.user.generateAccessToken({
+            email: req.body.email,
+        });
+
+        
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200, "token created successfully", {token}));
+    }
+);
+
+export { registerUser, signInUser };
