@@ -33,4 +33,8 @@ export type RequestBodyUser = {
 export interface TypedRequest<T> extends Request {
     body: T,
     files: any
+    user: {
+        id: string
+        email: string
+    } | null
 }

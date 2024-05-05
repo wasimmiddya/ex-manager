@@ -100,7 +100,7 @@ const registerUser = asyncHandler(
     }
 );
 
-// --------------------controller defined for user login or sign-in--------------------
+// --------------------Controller defined for user login or sign-in--------------------
 const signInUser = asyncHandler(
     async (
         req: TypedRequest<{ email: string; password: string }>,
@@ -118,7 +118,7 @@ const signInUser = asyncHandler(
             throw new ApiError(400, "Email is not in currect format");
         }
 
-        // retrieving data of exsiting user 
+        // retrieving data of exsiting user
         const user = await prisma.user.findUnique({
             where: { email },
             select: {
@@ -154,7 +154,6 @@ const signInUser = asyncHandler(
             throw new ApiError(500, "Can't update refresh token in database");
         }
 
-
         // setting the cookie options
         const options: CookieOptions = {
             httpOnly: true,
@@ -175,4 +174,36 @@ const signInUser = asyncHandler(
     }
 );
 
-export { registerUser, signInUser };
+// ------------------SignOut logic defined------------------
+const signOutUser = asyncHandler(async (req: TypedRequest<any>, res: Response) => {
+    const updatedUser = prisma.user.update({
+        where: {
+            id: req.user?.id,
+        },
+        data: {
+            refreshToken: null,
+        },
+        select: {
+            id: true,
+        },
+    });
+
+    if (!updatedUser) {
+        throw new ApiError(
+            500,
+            "Something went wrong can't delete token from database"
+        );
+    }
+
+    const cookieOptions: CookieOptions = {
+        httpOnly: true,
+        secure: true,
+    };
+
+    res.status(200)
+        .clearCookie("accessToken", cookieOptions)
+        .clearCookie("refreshToken", cookieOptions)
+        .json(new ApiResponse(200, "User signed out successfully", null))
+});
+
+export { registerUser, signInUser, signOutUser };
