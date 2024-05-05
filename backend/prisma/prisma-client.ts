@@ -1,8 +1,10 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { SALT } from "./../src/constants";
-import { ValidateUserType } from "./../src/@types/index";
 import jwt from "jsonwebtoken";
+import { ApiError } from "../src/utils/api_err.utils";
+
+
 
 const prisma = new PrismaClient().$extends({
     // --------------------define extensions for database queries------------------------
@@ -26,47 +28,36 @@ const prisma = new PrismaClient().$extends({
     // ----------------------------define extensions for models----------------------------
     model: {
         user: {
-            // utility method for validating the password of existed user
-            async isValidPassword({
-                email,
-                password,
-            }: ValidateUserType): Promise<boolean> {
-                // quering the database to fetch the existed user (i.e only password field)
-                const existedUser: { password: string } | null =
-                    await prisma.user.findUnique({
-                        where: {
-                            email: email,
-                        },
-                        select: {
-                            password: true,
-                        },
+            /**
+             * utility method for validating the password of existed user
+             * @deprecated
+             * @param this 
+             * @param plainPassword 
+             * @param where 
+             * @returns boolean
+             */
+            async isValidPassword<T>(
+                this: T,
+                plainPassword: string,
+                where: Prisma.Args<T, "findUnique">["where"]
+            ): Promise<boolean> {
+                const context = Prisma.getExtensionContext(this);
+
+                try {
+                    const user = (context as any).findUnique({
+                        where,
+                        select: { password: true },
                     });
 
-                // handler logic if the user does not exist on the database
-                if (!existedUser) {
-                    throw new Error("Wrong credentials");
+                    return await bcrypt.compare(plainPassword, user.password);
+                } catch (error) {
+                    throw new ApiError(400, "Something went wrong")
                 }
-
-                return await bcrypt.compare(password, existedUser.password);
             },
 
             /**
              * This method will generate the access token and return a long encoded string value
-             * ```js
-             * // internal token implementation
-             * jwt.sign({
-             *      {
-             *          id: user.id
-             *          full_name: user.full_name
-             *          email: user.email
-             *          role: user.role
-             *      },
-             *      secret: process.env.REFRESH_TOKEN_SECRET,
-             *      {
-             *          expiresIn: process.env.REFRESH_TOKEN_EXPIRY
-             *      }
-             * });
-             * ```
+             * @deprecated
              * @param this
              * @param where
              * @returns String
@@ -100,18 +91,7 @@ const prisma = new PrismaClient().$extends({
 
             /**
              * This method will generate the refresh token and return a long encoded string value
-             * ```js
-             * // internal token implementation
-             * jwt.sign({
-             *      {
-             *          id: user.id
-             *      },
-             *      secret: process.env.REFRESH_TOKEN_SECRET,
-             *      {
-             *          expiresIn: process.env.REFRESH_TOKEN_EXPIRY
-             *      }
-             * });
-             * ```
+             * @deprecated 
              * @param this
              * @param where
              * @returns String
@@ -122,7 +102,7 @@ const prisma = new PrismaClient().$extends({
             ): Promise<string> {
                 const context = Prisma.getExtensionContext(this);
 
-                const user = (context as any).findUnique({
+                const user = await (context as any).findUnique({
                     where,
                     select: { id: true },
                 });

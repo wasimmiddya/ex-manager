@@ -1,3 +1,4 @@
+import { Role } from '@prisma/client';
 import { UploadApiResponse } from 'cloudinary';
 import {Request} from 'express'
 
@@ -11,11 +12,12 @@ export enum UserRole {
     ADMIN
 }
 
-export type AccessTokenUserType = {
+export type TokenUserType = {
     id: string
-    full_name: string
+    full_name: string | null
     email: string
-    role: UserRole
+    role: Role
+    avater: string
 }
 
 export type RequestBodyUser = {

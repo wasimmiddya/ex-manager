@@ -1,11 +1,28 @@
-import { Response, NextFunction } from "express";
+import { Response, CookieOptions } from "express";
 import { asyncHandler } from "../utils/async_handler";
-import { RequestBodyUser, TypedRequest, UserRole } from "../@types";
+import { RequestBodyUser, TokenUserType, TypedRequest } from "../@types";
 import { ApiError } from "../utils/api_err.utils";
 import { DEFAULT_AVATER_URL, EMAIL_REGEX } from "../constants";
 import prisma from "../../prisma/prisma-client";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils";
 import { ApiResponse } from "../utils/api_response.utils";
+import jwt from "jsonwebtoken";
+
+const getAccessAndRefreshToken = (user: TokenUserType) => {
+    const accessToken = jwt.sign(
+        user,
+        process.env.ACCESS_TOKEN_SECRET as string,
+        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+    );
+
+    const refreshToken = jwt.sign(
+        { id: user.id },
+        process.env.REFRESH_TOKE_SECRET as string,
+        { expiresIn: process.env.REFRESH_TOKE_EXPIRY }
+    );
+
+    return { accessToken, refreshToken };
+};
 
 // ---------------Controller for handling user registration-----------------
 const registerUser = asyncHandler(
@@ -50,7 +67,7 @@ const registerUser = asyncHandler(
             avater = await uploadOnCloudinary(avaterLocalpath);
         }
 
-        console.log(avater?.secure_url);
+        // console.log(avater?.secure_url);
 
         // create new user in the database
         const user = await prisma.user.create({
@@ -70,8 +87,6 @@ const registerUser = asyncHandler(
             },
         });
 
-        
-
         if (!user) {
             throw new ApiError(
                 500,
@@ -85,17 +100,78 @@ const registerUser = asyncHandler(
     }
 );
 
+// --------------------controller defined for user login or sign-in--------------------
 const signInUser = asyncHandler(
-    async (req: TypedRequest<{ email: string }>, res: Response) => {
-        const token = await prisma.user.generateAccessToken({
-            email: req.body.email,
+    async (
+        req: TypedRequest<{ email: string; password: string }>,
+        res: Response
+    ) => {
+        const { email, password } = req.body;
+
+        // check whether the has filled up all the necessory fields or not
+        if (email.trim() === "" || password.trim() === "") {
+            throw new ApiError(400, "Some fields are missing");
+        }
+
+        // checking the email pattern
+        if (!EMAIL_REGEX.test(email)) {
+            throw new ApiError(400, "Email is not in currect format");
+        }
+
+        // retrieving data of exsiting user 
+        const user = await prisma.user.findUnique({
+            where: { email },
+            select: {
+                id: true,
+                full_name: true,
+                email: true,
+                avater: true,
+                role: true,
+            },
         });
 
-        
+        // throw error if user dose not exist
+        if (!user) {
+            throw new ApiError(400, "Invalid email address!");
+        }
 
+        // generate refresh and access tokens
+        const { accessToken, refreshToken } = getAccessAndRefreshToken(user);
+
+        // update the user with the newly generated refresh token
+        const updatedUser = await prisma.user.update({
+            where: { email },
+            data: {
+                refreshToken,
+            },
+            select: {
+                refreshToken: true,
+            },
+        });
+
+        // throw error if there is any problem occur during the updation time
+        if (!updatedUser.refreshToken) {
+            throw new ApiError(500, "Can't update refresh token in database");
+        }
+
+
+        // setting the cookie options
+        const options: CookieOptions = {
+            httpOnly: true,
+            secure: true,
+        };
+
+        // response the final result if signIn process successful
         return res
             .status(200)
-            .json(new ApiResponse(200, "token created successfully", {token}));
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .json(
+                new ApiResponse(200, "Authentication successful!", {
+                    accessToken,
+                    refreshToken,
+                })
+            );
     }
 );
 

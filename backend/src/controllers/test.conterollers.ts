@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import prisma from "./../../prisma/prisma-client";
 
 export const testApi = async (req: Request, res: Response) => {
 
@@ -15,13 +14,13 @@ export const testApi = async (req: Request, res: Response) => {
     //     },
     // });
 
-    const isValidPassword = await prisma.user.isValidPassword({email: "johndoe2000@gmail.com", password: "12345"})
+    // const isValidPassword = await prisma.user.isValidPassword({email: "johndoe2000@gmail.com", password: "12345"})
 
 
     return res.status(200).json({
         success: true,
         message:
             "API testing successfull, all the routes and controllers are working absolutely fine!!!",
-        data: {isValidPassword},
+        data: {},
     });
 };
