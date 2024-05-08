@@ -28,26 +28,18 @@ const getAccessAndRefreshToken = (user: TokenUserType) => {
 const registerUser = asyncHandler(
     async (req: TypedRequest<RequestBodyUser>, res: Response) => {
         // checking if all the fields are filled up or not
-        const { fname, lname, email, password, confirmPassword, role, mobile } =
+        const { fname, lname, email, password, role, mobile } =
             req.body;
 
-        console.log(req.body);
+        // console.log(req.body);
 
         // if some of the fields send by the user in request body is empty, then throw api error
         if (
-            [fname, lname, email, password, confirmPassword].some(
+            [fname, lname, email, password, mobile].some(
                 (val, idx, arr) => val.trim() === ""
             )
         ) {
             throw new ApiError(401, "Some fields are missing...");
-        }
-
-        // for checking password and confirm password fields
-        if (password !== confirmPassword) {
-            throw new ApiError(
-                400,
-                "Password and Confirm Password are not matching!!!"
-            );
         }
 
         // check whether the email is in currect format or not i.e 'example@gmail.com'
@@ -69,15 +61,20 @@ const registerUser = asyncHandler(
             );
         }
 
-        let avater = null;
-        let avaterLocalpath = req.file?.path;
+        // console.log(req.files.avater);
+        
 
+        let avater = null;
+        let avaterLocalpath = req.files?.avater[0].path;
+
+        // console.log('localPath:: ', avaterLocalpath);
+        
         // upload avater image on cloudinary
         if (avaterLocalpath) {
             avater = await uploadOnCloudinary(avaterLocalpath);
         }
 
-        // console.log(avater?.secure_url);
+        // console.log('avater:: ',avater);
 
         // create new user in the database
         const user = await prisma.user.create({

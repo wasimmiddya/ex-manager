@@ -10,7 +10,7 @@ import { verifyJWT } from "../middlewares/auth.middlewares";
 const router = Router();
 
 /* -----------------open routes defined--------------------- */
-router.route("/register").post(upload.single("avater"), registerUser);
+router.route("/register").post(upload.fields([{name: "avater", maxCount: 1}]), registerUser);
 router.route("/signin").post(signInUser);
 
 /* -------------------secure routes defined----------------- */

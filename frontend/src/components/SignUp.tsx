@@ -1,4 +1,10 @@
-import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
+import {
+  ChangeEventHandler,
+  FC,
+  FormEventHandler,
+  useEffect,
+  useState,
+} from "react";
 import { countryCodeNo } from "../constants";
 import axios, { AxiosRequestConfig } from "axios";
 
@@ -22,6 +28,10 @@ const SignUp: FC = () => {
   });
 
   const [avater, setAvater] = useState<File | null>();
+
+  useEffect(() => {
+    console.log(avater);
+  }, [avater]);
 
   const handleChangeSelect: ChangeEventHandler<HTMLSelectElement> = ({
     target: { name, value },
@@ -48,21 +58,35 @@ const SignUp: FC = () => {
     event.preventDefault();
     setIsLoading(true);
 
+    setFieldInputs({
+      fname: "",
+      lname: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      mobile: "",
+    });
+
     const user = { ...fieldInputs, ...selectedInputs };
 
     const formData = new FormData();
 
-    formData.append("data", JSON.stringify(user));
-    formData.append("avater", avater ? avater : "");
+    formData.append("avater", avater as any);
+    formData.append("fname", user.fname);
+    formData.append("lname", user.lname);
+    formData.append("email", user.email);
+    formData.append("password", user.password);
+    formData.append("mobile", `${selectedInputs.countryCode} ${user.mobile}`);
+    formData.append("role", user.role);
 
     const config: AxiosRequestConfig<FormData> = {
       headers: {
-        "Content-Type": "multipart/form",
+        "Content-Type": "multipart/form-data",
       },
     };
 
     const response = await axios
-      .post("/user/register", formData, config)
+      .post("/api/v1/user/register", formData, config)
       .then((res) => res.data)
       .catch((err) => {
         console.error(err);

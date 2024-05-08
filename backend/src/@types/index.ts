@@ -1,6 +1,6 @@
-import { Role } from '@prisma/client';
-import { UploadApiResponse } from 'cloudinary';
-import {Request} from 'express'
+import { Role } from "@prisma/client";
+import { UploadApiResponse } from "cloudinary";
+import { Request } from "express";
 
 export type ValidateUserType = {
     email: string;
@@ -9,33 +9,34 @@ export type ValidateUserType = {
 
 export enum UserRole {
     USER,
-    ADMIN
+    ADMIN,
 }
 
 export type TokenUserType = {
-    id: string
-    full_name: string | null
-    email: string
-    role: Role
-    avater: string
-}
+    id: string;
+    full_name: string | null;
+    email: string;
+    role: Role;
+    avater: string;
+};
 
 export type RequestBodyUser = {
-    fname: string,
-    lname: string,
-    email: string,
-    password: string,
-    confirmPassword: string,
-    mobile: string,
-    role: UserRole
-    avater?: string | UploadApiResponse
-}
+    fname: string;
+    lname: string;
+    email: string;
+    password: string;
+    mobile: string;
+    role: UserRole;
+    avater?: string | UploadApiResponse;
+};
 
 export interface TypedRequest<T> extends Request {
-    body: T,
-    files: any
+    body: T;
+    files: {
+        avater: [any];
+    };
     user: {
-        id: string
-        email: string
-    } | null
+        id: string;
+        email: string;
+    } | null;
 }
