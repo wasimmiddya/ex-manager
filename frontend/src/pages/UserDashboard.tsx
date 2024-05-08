@@ -13,6 +13,8 @@ const UserDashboard: FC = () => {
     setSearchOption(value);
   };
 
+  
+
   return (
     <div className="bg-white  px-10 py-7 mx-auto rounded-2xl">
       <div className=" flex justify-between items-center">

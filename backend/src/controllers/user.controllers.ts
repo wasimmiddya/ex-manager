@@ -28,16 +28,26 @@ const getAccessAndRefreshToken = (user: TokenUserType) => {
 const registerUser = asyncHandler(
     async (req: TypedRequest<RequestBodyUser>, res: Response) => {
         // checking if all the fields are filled up or not
-        const { fname, lname, email, password, confirm_password, role } =
+        const { fname, lname, email, password, confirmPassword, role, mobile } =
             req.body;
+
+        console.log(req.body);
 
         // if some of the fields send by the user in request body is empty, then throw api error
         if (
-            [fname, lname, email, password, confirm_password].some(
-                (val, ind, arr) => val.trim() === ""
+            [fname, lname, email, password, confirmPassword].some(
+                (val, idx, arr) => val.trim() === ""
             )
         ) {
             throw new ApiError(401, "Some fields are missing...");
+        }
+
+        // for checking password and confirm password fields
+        if (password !== confirmPassword) {
+            throw new ApiError(
+                400,
+                "Password and Confirm Password are not matching!!!"
+            );
         }
 
         // check whether the email is in currect format or not i.e 'example@gmail.com'
@@ -75,6 +85,7 @@ const registerUser = asyncHandler(
                 fname,
                 lname,
                 email,
+                mobile,
                 password,
                 role: role as any,
                 avater: avater ? avater.url : (DEFAULT_AVATER_URL as any),
@@ -175,35 +186,37 @@ const signInUser = asyncHandler(
 );
 
 // ------------------SignOut logic defined------------------
-const signOutUser = asyncHandler(async (req: TypedRequest<any>, res: Response) => {
-    const updatedUser = prisma.user.update({
-        where: {
-            id: req.user?.id,
-        },
-        data: {
-            refreshToken: null,
-        },
-        select: {
-            id: true,
-        },
-    });
+const signOutUser = asyncHandler(
+    async (req: TypedRequest<any>, res: Response) => {
+        const updatedUser = prisma.user.update({
+            where: {
+                id: req.user?.id,
+            },
+            data: {
+                refreshToken: null,
+            },
+            select: {
+                id: true,
+            },
+        });
 
-    if (!updatedUser) {
-        throw new ApiError(
-            500,
-            "Something went wrong can't delete token from database"
-        );
+        if (!updatedUser) {
+            throw new ApiError(
+                500,
+                "Something went wrong can't delete token from database"
+            );
+        }
+
+        const cookieOptions: CookieOptions = {
+            httpOnly: true,
+            secure: true,
+        };
+
+        res.status(200)
+            .clearCookie("accessToken", cookieOptions)
+            .clearCookie("refreshToken", cookieOptions)
+            .json(new ApiResponse(200, "User signed out successfully", null));
     }
-
-    const cookieOptions: CookieOptions = {
-        httpOnly: true,
-        secure: true,
-    };
-
-    res.status(200)
-        .clearCookie("accessToken", cookieOptions)
-        .clearCookie("refreshToken", cookieOptions)
-        .json(new ApiResponse(200, "User signed out successfully", null))
-});
+);
 
 export { registerUser, signInUser, signOutUser };

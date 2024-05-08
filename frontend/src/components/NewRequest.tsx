@@ -1,17 +1,39 @@
 import { nanoid } from "nanoid";
-import { ChangeEventHandler, FC, useState } from "react";
+import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
 import { BiSolidReceipt } from "react-icons/bi";
 
 const NewRequest: FC = () => {
+  // state for handling input changes for request record (i.e input for a single request record)
   const [input, setInput] = useState({
-    exp: "",
-    amtClaimed: "",
+    expenditure: "",
+    amountClaimed: "",
   });
 
+  // this state contains the data of the request table
   const [table, setTable] = useState<
-    { id?: string; exp: string; amtClaimed: string }[]
+    { id?: string; expenditure: string; amtClaimed: string }[]
   >([]);
 
+  // state for handling changes in request receipt images uploading(for a single image)
+  const [image, setImage] = useState<{
+    image_as_base64: string;
+    image_as_file: File | null;
+  }>({ image_as_base64: "", image_as_file: null });
+
+  // state for storing receipts file(i.e array of images)
+  const [receiptFiles, setReceiptFiles] = useState<
+    {
+      image_as_base64: string;
+      image_as_file: File | null;
+    }[]
+  >([]);
+
+  /*
+   * =======================================================================
+   * -------------// All the handling logics are written here //------------
+   * =======================================================================
+   */
+  // handle when user input changes
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = ({
     target: { name, value },
   }) => {
@@ -21,15 +43,62 @@ const NewRequest: FC = () => {
     });
   };
 
+  // handle when user clicks add button to add new request record to the table
   const handleClick = () => {
-    setTable([...(table as any), { id: nanoid(), ...input }]);
-    setInput({ exp: "", amtClaimed: "" });
+    // storing input data in table state
+    setTable([
+      ...(table as any),
+      {
+        id: nanoid(),
+        ...input,
+      },
+    ]);
+
+    // storing receipts file or images of receipts in state
+    setReceiptFiles([...(receiptFiles as any), image]);
+
+    // clear the input
+    setInput({ expenditure: "", amountClaimed: "" });
+  };
+
+  // handle changes when user  select an image from file input
+  const handleUploadFileChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (e.target.files) {
+      const image_as_base64 = URL.createObjectURL(e.target.files[0]);
+      const image_as_file = e.target.files[0];
+
+      console.log(e.target.files);
+      
+
+      if (image_as_file) {
+        setImage({ ...image, image_as_base64, image_as_file });
+      }
+    }
+  };
+
+  // handling the form submission with bulk data
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    // formData.append("fields", JSON.stringify(table));
+    formData.append("greet", "Hello World!!!");
+    formData.append("num", "2763");
+
+
+    // formData.append("files", image as any);
+
+    console.log(formData);
+    
   };
 
   return (
     <div className="w-full mx-auto font-montserrat, grid grid-cols-11 place-items-center">
       {/*
-       *-----------Left section for listing the prepared requests by the employee--------------
+       * ===========================================================================================
+       * <---------// Left section for listing the prepared requests by the employee //------------>
+       * ===========================================================================================
        */}
       <div className="px-7 bg-white font-montserrat w-full max-h-[424px] min-h-[220px] rounded-md overflow-scroll relative col-span-6">
         <div className="py-5 sticky top-0 bg-white">
@@ -37,7 +106,10 @@ const NewRequest: FC = () => {
             <span className="text-red-500">New</span> Request
           </h3>
         </div>
-        <form className="overflow-hidden rounded-lg border px-5 pt-2">
+        <form
+          className="overflow-hidden rounded-lg border px-5 pt-2"
+          onSubmit={handleSubmit}
+        >
           <table className="w-full">
             <thead>
               <tr className="text-left border-b-2 border-red-500 text-slate-600">
@@ -52,7 +124,7 @@ const NewRequest: FC = () => {
               {table &&
                 table.map((elem) => (
                   <tr key={elem.id} className="text-slate-500 border-b">
-                    <td className="py-2">{elem.exp}</td>
+                    <td className="py-2">{elem.expenditure}</td>
                     <td className="py-2">
                       <button>
                         <BiSolidReceipt className="ml-5 hover:text-red-500 text-lg" />
@@ -82,7 +154,9 @@ const NewRequest: FC = () => {
         </form>
       </div>
       {/*
-       *---------------Right section request form to add requests to the list-----------------
+       * ===========================================================================================
+       * <---------// right section contains input fields for adding data to the table //---------->
+       * ===========================================================================================
        */}
       <div className="py-3 px-10 bg-white rounded-lg w-[70%] text-slate-500 col-span-5">
         <h3 className="text-2xl text-slate-600 font-bold font-comfortaa text-center my-4">
@@ -115,10 +189,10 @@ const NewRequest: FC = () => {
               <br />
               <input
                 type="text"
-                name="exp"
+                name="expenditure"
                 className="p-0.5 border-2 border-slate-400 focus:outline-none focus:border-red-500 rounded"
                 onChange={handleInputChange}
-                value={input.exp}
+                value={input.expenditure}
               />
             </div>
             <div className="space-y-2 ml-5">
@@ -130,22 +204,24 @@ const NewRequest: FC = () => {
                 <span className="font-bold absolute left-2 top-1">$</span>
                 <input
                   type="text"
-                  name="amtClaimed"
+                  name="amountClaimed"
                   className="p-0.5 border-2 border-slate-400 focus:outline-none focus:border-red-500 rounded pl-5 w-36"
                   onChange={handleInputChange}
-                  value={input.amtClaimed}
+                  value={input.amountClaimed}
                 />
               </div>
             </div>
             <div className="space-y-1 mt-2">
-              <label htmlFor="exp" className="font-semibold">
+              <label htmlFor="receipts" className="font-semibold">
                 Upload Receipt:
               </label>
               <br />
               <div className="relative">
                 <input
                   type="file"
+                  name="receipt-image"
                   className="file:bg-red-500 file:border-none file:rounded-md file:text-white file:w-32  text-sm file:hover:cursor-pointer"
+                  onChange={handleUploadFileChange}
                 />
               </div>
             </div>

@@ -85,3 +85,16 @@ export const reports = [
         status: "Pending"
     },
 ]
+
+export const countryCodeNo = [
+    { country: "IND", code: "+91" },
+    { country: "BNGD", code: "+880" },
+    { country: "AUS", code: "+61" },
+    { country: "BLG", code: "+32" },
+    { country: "CHN", code: "+86" },
+    { country: "FRN", code: "+33" },
+    { country: "GRM", code: "+49" },
+    { country: "UK", code: "+44" },
+    { country: "USA", code: "+1" },
+    { country: "JPN", code: "+81" },
+  ];

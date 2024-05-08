@@ -25,7 +25,8 @@ export type RequestBodyUser = {
     lname: string,
     email: string,
     password: string,
-    confirm_password: string
+    confirmPassword: string,
+    mobile: string,
     role: UserRole
     avater?: string | UploadApiResponse
 }

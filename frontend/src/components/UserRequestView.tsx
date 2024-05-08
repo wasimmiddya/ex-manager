@@ -25,8 +25,12 @@ const UserRequestView: FC = () => {
           <Field heading="Status" label="Approved" />
         </div>
         <div>
-            <h4 className="text-center my-1 text-lg text-slate-600">Receipt</h4>
-            <img src="/travel-exp-receipt.jpg" alt="exp-receipt" className="h-52 mx-auto cursor-pointer border" />
+          <h4 className="text-center my-1 text-lg text-slate-600">Receipt</h4>
+          <img
+            src="/travel-exp-receipt.jpg"
+            alt="exp-receipt"
+            className="h-52 mx-auto cursor-pointer border"
+          />
         </div>
       </div>
     </div>

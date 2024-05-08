@@ -14,64 +14,59 @@ import NewRequest from "./components/NewRequest.tsx";
 import UserRequestView from "./components/UserRequestView.tsx";
 import AdminReportView from "./components/AdminReportView.tsx";
 
-
-const router = createBrowserRouter(
-  [
-    {
-      path: "/",
-      element: <App />,
-      children: [
-        {
-          path: "/",
-          element: <Welcome />
-        },
-        {
-          path: "auth",
-          element: <AuthLayout />,
-          children: [
-            { 
-              path: "signin",
-              element: <SignIn />
-            },
-            {
-              path: "signup",
-              element: <SignUp />
-            }
-          ]
-        },
-        {
-          path: "dashboard",
-          element: <DashboardLayout />,
-          children: [
-            {
-              path: "user",
-              element: <UserDashboard />
-            },
-            {
-              path: "admin",
-              element: <AdminDashboard />
-            },
-            {
-              path: "new-request",
-              element: <NewRequest />
-            },
-            {
-              path: "view-user-req/:id",
-              element: <UserRequestView />
-            },
-            {
-              path: "view-admin-rep/:id",
-              element: <AdminReportView />
-            }
-          ]
-        }
-      ]
-    }
-  ]
-)
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      {
+        path: "/",
+        element: <Welcome />,
+      },
+      {
+        path: "auth",
+        element: <AuthLayout />,
+        children: [
+          {
+            path: "signin",
+            element: <SignIn />,
+          },
+          {
+            path: "signup",
+            element: <SignUp />,
+          },
+        ],
+      },
+      {
+        path: "dashboard",
+        element: <DashboardLayout />,
+        children: [
+          {
+            path: "user",
+            element: <UserDashboard />,
+          },
+          {
+            path: "admin",
+            element: <AdminDashboard />,
+          },
+          {
+            path: "new-request",
+            element: <NewRequest />,
+          },
+          {
+            path: "view-user-req/:id",
+            element: <UserRequestView />,
+          },
+          {
+            path: "view-admin-rep/:id",
+            element: <AdminReportView />,
+          },
+        ],
+      },
+    ],
+  },
+]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <RouterProvider router={router}/>
-  </React.StrictMode>
+  <RouterProvider router={router} />
 );

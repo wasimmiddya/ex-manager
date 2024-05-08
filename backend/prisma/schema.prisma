@@ -21,6 +21,7 @@ model User {
   lname String
   full_name String?
   email String @unique
+  mobile String @unique
   password String
   role Role 
   avater String
