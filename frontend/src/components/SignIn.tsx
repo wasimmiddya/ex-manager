@@ -1,6 +1,14 @@
-import { FC } from "react";
+import { ChangeEventHandler, FC, useState } from "react";
 
 const SignIn: FC = () => {
+  const [inputFields, setInputFields] = useState({ email: "", password: "", role: "" });
+
+  const handleInputChange: ChangeEventHandler<HTMLInputElement> = ({
+    target: { value, name },
+  }) => {
+    setInputFields({ ...inputFields, [name]: value });
+  };
+
   return (
     <div className="w-[55%] bg-white rounded-md px-5 py-2 font-montserrat">
       <div>
@@ -15,6 +23,9 @@ const SignIn: FC = () => {
             className="w-full border-b-2 border-slate-400 text-slate-500 py-[2px] focus:border-b-red-500 focus:outline-none placeholder:text-slate-500"
             required
             placeholder="Enter Email"
+            name="email"
+            onChange={handleInputChange}
+            value={inputFields.email}
           />
         </div>
         <div>
@@ -26,7 +37,9 @@ const SignIn: FC = () => {
           />
         </div>
         <div className="mt-2 space-x-5">
-          <label htmlFor="role" className="text-slate-500">SignIn as : </label>
+          <label htmlFor="role" className="text-slate-500">
+            SignIn as :{" "}
+          </label>
           <select
             name="role"
             id="role"

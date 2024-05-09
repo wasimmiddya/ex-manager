@@ -1,4 +1,5 @@
-import React from "react";
+"use-client";
+
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
@@ -13,6 +14,8 @@ import AdminDashboard from "./pages/AdminDashboard.tsx";
 import NewRequest from "./components/NewRequest.tsx";
 import UserRequestView from "./components/UserRequestView.tsx";
 import AdminReportView from "./components/AdminReportView.tsx";
+import AppContextProvider from "./contexts/AppContextProvider.tsx";
+
 
 const router = createBrowserRouter([
   {
@@ -68,5 +71,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <RouterProvider router={router} />
+  <AppContextProvider>
+    <RouterProvider router={router} />
+  </AppContextProvider>
 );

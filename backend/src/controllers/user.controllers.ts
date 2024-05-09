@@ -7,29 +7,33 @@ import prisma from "../../prisma/prisma-client";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils";
 import { ApiResponse } from "../utils/api_response.utils";
 import jwt from "jsonwebtoken";
+import { removeLocalFile } from "../utils/helper";
 
 const getAccessAndRefreshToken = (user: TokenUserType) => {
-    const accessToken = jwt.sign(
-        user,
-        process.env.ACCESS_TOKEN_SECRET as string,
-        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
-    );
+    try {
+        const accessToken = jwt.sign(
+            user,
+            process.env.ACCESS_TOKEN_SECRET as string,
+            { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+        );
 
-    const refreshToken = jwt.sign(
-        { id: user.id },
-        process.env.REFRESH_TOKE_SECRET as string,
-        { expiresIn: process.env.REFRESH_TOKE_EXPIRY }
-    );
+        const refreshToken = jwt.sign(
+            { id: user.id },
+            process.env.REFRESH_TOKE_SECRET as string,
+            { expiresIn: process.env.REFRESH_TOKE_EXPIRY }
+        );
 
-    return { accessToken, refreshToken };
+        return { accessToken, refreshToken };
+    } catch (error) {
+        throw new ApiError(500, "Failed to generate refresh and access token");
+    }
 };
 
 // ---------------Controller for handling user registration-----------------
 const registerUser = asyncHandler(
     async (req: TypedRequest<RequestBodyUser>, res: Response) => {
         // checking if all the fields are filled up or not
-        const { fname, lname, email, password, role, mobile } =
-            req.body;
+        const { fname, lname, email, password, role, mobile } = req.body;
 
         // console.log(req.body);
 
@@ -39,7 +43,9 @@ const registerUser = asyncHandler(
                 (val, idx, arr) => val.trim() === ""
             )
         ) {
-            throw new ApiError(401, "Some fields are missing...");
+            // remove, if there is any unused local image file
+            removeLocalFile(req.files?.avater[0].path)
+            throw new ApiError(400, "Some fields are missing...");
         }
 
         // check whether the email is in currect format or not i.e 'example@gmail.com'
@@ -55,20 +61,20 @@ const registerUser = asyncHandler(
         });
 
         if (isUserExisted) {
+            removeLocalFile(req.files?.avater[0].path)
             throw new ApiError(
-                401,
+                409,
                 "User with this email address is already exist."
             );
         }
 
-        // console.log(req.files.avater);
-        
-
         let avater = null;
         let avaterLocalpath = req.files?.avater[0].path;
 
+        console.log("Image uploaded in local server");
+
         // console.log('localPath:: ', avaterLocalpath);
-        
+
         // upload avater image on cloudinary
         if (avaterLocalpath) {
             avater = await uploadOnCloudinary(avaterLocalpath);
@@ -103,7 +109,7 @@ const registerUser = asyncHandler(
         }
 
         return res
-            .status(200)
+            .status(201)
             .json(new ApiResponse(200, "User created successfully!", user));
     }
 );
@@ -140,7 +146,7 @@ const signInUser = asyncHandler(
 
         // throw error if user dose not exist
         if (!user) {
-            throw new ApiError(400, "Invalid email address!");
+            throw new ApiError(401, "Invalid email address!");
         }
 
         // generate refresh and access tokens

@@ -1,14 +1,16 @@
-import {
-  ChangeEventHandler,
-  FC,
-  FormEventHandler,
-  useEffect,
-  useState,
-} from "react";
+"use-client";
+
+import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
 import { countryCodeNo } from "../constants";
 import axios, { AxiosRequestConfig } from "axios";
+import { useErrorBoundary } from "react-error-boundary";
 
 const SignUp: FC = () => {
+  /*
+   * =====================================================================
+   * --------------All the component states are defined here--------------
+   * =====================================================================
+   */
   const [isLoading, setIsLoading] = useState(false);
   const [selectedInputs, setSelectedInputs] = useState<{
     countryCode: string;
@@ -17,7 +19,6 @@ const SignUp: FC = () => {
     countryCode: "+91",
     role: "USER",
   });
-
   const [fieldInputs, setFieldInputs] = useState({
     fname: "",
     lname: "",
@@ -26,13 +27,14 @@ const SignUp: FC = () => {
     confirmPassword: "",
     mobile: "",
   });
-
   const [avater, setAvater] = useState<File | null>();
+  const { showBoundary } = useErrorBoundary();
 
-  useEffect(() => {
-    console.log(avater);
-  }, [avater]);
-
+  /*
+   * =====================================================================
+   * --------------All the component handlers are defined here------------
+   * =====================================================================
+   */
   const handleChangeSelect: ChangeEventHandler<HTMLSelectElement> = ({
     target: { name, value },
   }) => {
@@ -89,10 +91,20 @@ const SignUp: FC = () => {
       .post("/api/v1/user/register", formData, config)
       .then((res) => res.data)
       .catch((err) => {
-        console.error(err);
+        const statusCode = err.response.status;
+        // explicitly throwing errors
+        if (statusCode == 400) showBoundary(new Error("Invalid credentials"));
+        else if (statusCode == 409)
+          showBoundary(new Error("User with this email address already exist"));
+        else if (statusCode >= 500)
+          showBoundary(
+            "Internal Error, we are trying to fix as soon as possible"
+          );
+        return statusCode;
       });
 
-    console.log(response);
+    /* -----------/ API error handling logic /----------- */
+    if (response >= 400) return;
 
     setIsLoading(false);
   };
