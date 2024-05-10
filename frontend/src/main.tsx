@@ -17,6 +17,38 @@ import AdminReportView from "./components/AdminReportView.tsx";
 import AppContextProvider from "./contexts/AppContextProvider.tsx";
 
 
+/* const isAuthorizedUser = () => {
+  const cookieUser = Cookies.get("user")
+  
+  console.log(cookieUser);
+  if(cookieUser) {
+    const user = JSON.parse(cookieUser)
+
+    if(user.role === "USER")
+        return true;
+  }
+
+  
+
+  return false;
+}
+
+const isAuthorizedAdmin = () => {
+  const cookieUser = Cookies.get("user")
+  
+  if(cookieUser) {
+    const user = JSON.parse(cookieUser)
+
+    if(user.role === "ADMIN")
+        return true;
+  }
+
+  return false;
+}
+ */
+
+
+
 const router = createBrowserRouter([
   {
     path: "/",

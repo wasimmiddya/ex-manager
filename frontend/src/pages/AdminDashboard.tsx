@@ -2,10 +2,12 @@ import { ChangeEventHandler, FC, useState } from "react";
 import { reports, searchReportOption } from "../constants";
 import { BiSolidReceipt } from "react-icons/bi";
 import { MdOpenInNew } from "react-icons/md";
-import { NavLink } from "react-router-dom";
+import { NavLink, Navigate } from "react-router-dom";
+import { verifyAdmin } from "../utils/auth";
 
 const AdminDashboard: FC = () => {
   const [searchOprion, setSearchOption] = useState(searchReportOption[0]);
+  const isAuthorized = verifyAdmin();
 
   const handleSelectInputChange: ChangeEventHandler<HTMLSelectElement> = ({
     target: { value },
@@ -13,7 +15,9 @@ const AdminDashboard: FC = () => {
     setSearchOption(value);
   };
 
-
+  if (!isAuthorized) {
+    return <Navigate to={"/auth/signin"} replace />;
+  }
 
   return (
     <div className="bg-white  px-10 py-7 mx-auto rounded-2xl">
@@ -39,7 +43,7 @@ const AdminDashboard: FC = () => {
         <div>
           <div>
             <label>Search by : </label>
-            <input type="date" className="border p-1 text-slate-600"/>
+            <input type="date" className="border p-1 text-slate-600" />
           </div>
         </div>
       </div>
@@ -62,11 +66,11 @@ const AdminDashboard: FC = () => {
               <th className="text-left py-2 border-b-2 border-red-500">
                 Submitted On
               </th>
-              
+
               <th className="text-left py-2 border-b-2 border-red-500">
                 Amount Claimed
               </th>
-              
+
               <th className="text-left py-2 border-b-2 border-red-500">
                 Status
               </th>
@@ -92,7 +96,7 @@ const AdminDashboard: FC = () => {
                   <button>
                     {
                       <NavLink to={`/dashboard/view-admin-rep/${elem.id}`}>
-                        <MdOpenInNew  className="w-7 mt-2 bg-red-500 rounded p-1 text-white text-xl" />
+                        <MdOpenInNew className="w-7 mt-2 bg-red-500 rounded p-1 text-white text-xl" />
                       </NavLink>
                     }
                   </button>

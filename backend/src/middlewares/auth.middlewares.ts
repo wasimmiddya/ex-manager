@@ -13,7 +13,7 @@ const verifyJWT = asyncHandler(
                 req.cookies?.accessToken ||
                 req.header("Authorization")?.replace("Bearar ", "");
 
-            console.log({token});
+            // console.log({token});
             
 
             if (!token) {
@@ -26,7 +26,7 @@ const verifyJWT = asyncHandler(
                 process.env.ACCESS_TOKEN_SECRET as string
             );
 
-            console.log({ decodedToken });
+            // console.log({ decodedToken });
 
             // verify the user id
             const user = await prisma.user.findUnique({

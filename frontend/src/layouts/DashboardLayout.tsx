@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Outlet } from "react-router-dom";
+import {  Outlet } from "react-router-dom";
 import { data } from "../constants";
 
 const DashboardLayout: FC = () => {
@@ -37,7 +37,7 @@ const DashboardLayout: FC = () => {
         </div>
       </div>
       <div >
-        <Outlet />
+        <Outlet/>
       </div>
     </div>
   );

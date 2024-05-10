@@ -1,32 +1,32 @@
+import axios, { AxiosRequestConfig } from "axios";
 import { nanoid } from "nanoid";
-import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
+import { ChangeEventHandler, FC, FormEventHandler, useEffect, useState } from "react";
 import { BiSolidReceipt } from "react-icons/bi";
 
 const NewRequest: FC = () => {
   // state for handling input changes for request record (i.e input for a single request record)
   const [input, setInput] = useState({
     expenditure: "",
-    amountClaimed: "",
+    amountClaimed: 0,
   });
 
   // this state contains the data of the request table
   const [table, setTable] = useState<
-    { id?: string; expenditure: string; amtClaimed: string }[]
+    { id?: string; expenditure: string; amountClaimed: number }[]
   >([]);
 
   // state for handling changes in request receipt images uploading(for a single image)
-  const [image, setImage] = useState<{
-    image_as_base64: string;
-    image_as_file: File | null;
-  }>({ image_as_base64: "", image_as_file: null });
+  const [image, setImage] = useState<File>();
 
   // state for storing receipts file(i.e array of images)
-  const [receiptFiles, setReceiptFiles] = useState<
-    {
-      image_as_base64: string;
-      image_as_file: File | null;
-    }[]
-  >([]);
+  const [receiptFiles, setReceiptFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    const stringFiles = JSON.stringify(receiptFiles)
+    console.log(stringFiles);
+    const parseFiles = JSON.parse(stringFiles)
+    console.log(parseFiles);
+  }, [receiptFiles])
 
   /*
    * =======================================================================
@@ -37,10 +37,11 @@ const NewRequest: FC = () => {
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = ({
     target: { name, value },
   }) => {
-    setInput({
-      ...input,
-      [name]: value,
-    });
+    if (name === "amountClaimed") {
+      setInput({ ...input, [name]: Number(value) });
+    } else {
+      setInput({ ...input, [name]: value });
+    }
   };
 
   // handle when user clicks add button to add new request record to the table
@@ -58,39 +59,44 @@ const NewRequest: FC = () => {
     setReceiptFiles([...(receiptFiles as any), image]);
 
     // clear the input
-    setInput({ expenditure: "", amountClaimed: "" });
+    setInput({ expenditure: "", amountClaimed: 0 });
   };
 
   // handle changes when user  select an image from file input
-  const handleUploadFileChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (e.target.files) {
-      const image_as_base64 = URL.createObjectURL(e.target.files[0]);
-      const image_as_file = e.target.files[0];
-
-      console.log(e.target.files);
-      
-
-      if (image_as_file) {
-        setImage({ ...image, image_as_base64, image_as_file });
-      }
+  const handleUploadFileChange: ChangeEventHandler<HTMLInputElement> = (
+    event
+  ) => {
+    if (event.target.files) {
+      setImage(event.target.files[0] as File);
     }
   };
 
   // handling the form submission with bulk data
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault();
 
     const formData = new FormData();
 
-    // formData.append("fields", JSON.stringify(table));
-    formData.append("greet", "Hello World!!!");
-    formData.append("num", "2763");
-
-
-    // formData.append("files", image as any);
-
-    console.log(formData);
+    formData.append("data", JSON.stringify(table));
     
+    receiptFiles.map((elem) => {
+      formData.append("receiptFiles", elem)
+    })
+
+    const config: AxiosRequestConfig<FormData> = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    const apiResponse = await axios
+      .post("/api/v1/request/user-request", formData, config)
+      .then((res) => res.data)
+      .catch((err) => {
+        console.log(err);
+      });
+
+    console.log(apiResponse);
   };
 
   return (
@@ -130,7 +136,7 @@ const NewRequest: FC = () => {
                         <BiSolidReceipt className="ml-5 hover:text-red-500 text-lg" />
                       </button>
                     </td>
-                    <td className="py-2">${elem.amtClaimed}</td>
+                    <td className="py-2">${elem.amountClaimed}</td>
                     <td className="py-2">{new Date().toLocaleDateString()}</td>
                     <td className="py-2 text-center">
                       <button

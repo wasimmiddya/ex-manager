@@ -1,7 +1,11 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { AppContext } from "../contexts/AppContext";
+import NavButtons from "./NavButtons";
+import ProfileCard from "./ProfileCard";
 
 const Navbar: FC = () => {
+  const {isLoggedIn} = useContext(AppContext)
   return (
     <nav className="bg-white px-16 py-3 font-comfortaa grid grid-cols-2">
       <div>
@@ -12,34 +16,9 @@ const Navbar: FC = () => {
         </div>
       </div>
       <div className="flex justify-end items-center">
-        <div>
-          <ul className="flex justify-end space-x-8">
-            <li>
-              <NavLink
-                to={"/auth/signin"}
-                className={({ isActive }) => {
-                  return `py-[2px] font-bold animated-link text-lg text-neutral-700 ${
-                    isActive ? "text-red-500" : ""
-                  }`;
-                }}
-              >
-                SignIn
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to={"/auth/signup"}
-                className={({ isActive }) => {
-                  return `py-[2px] font-bold animated-link text-lg text-neutral-700 ${
-                    isActive ? "text-red-500" : ""
-                  }`;
-                }}
-              >
-                SignUp
-              </NavLink>
-            </li>
-          </ul>
-        </div>
+        {
+          isLoggedIn ?  <ProfileCard />: <NavButtons />
+        }
       </div>
     </nav>
   );

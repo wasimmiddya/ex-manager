@@ -30,10 +30,17 @@ export type RequestBodyUser = {
     avater?: string | UploadApiResponse;
 };
 
+export type RequestDataBody = {
+    expenditure: string;
+    amountClaimed: number;
+    receipt?: string;
+}
+
 export interface TypedRequest<T> extends Request {
     body: T;
     files: {
         avater: [any];
+        receiptFiles: [any]
     };
     user: {
         id: string;

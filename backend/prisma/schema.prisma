@@ -44,10 +44,10 @@ model Request {
   expenditure String
   submitted_on String
   amount_claimed Float
-  amount_approved Float
+  amount_approved Float?
   receipt String 
-  approval_date String
-  status Status
+  approval_date String?
+  status Status @default(Pending)
   user RequestOfUser[]
 }
 

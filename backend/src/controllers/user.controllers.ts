@@ -44,7 +44,7 @@ const registerUser = asyncHandler(
             )
         ) {
             // remove, if there is any unused local image file
-            removeLocalFile(req.files?.avater[0].path)
+            removeLocalFile(req.files?.avater[0].path);
             throw new ApiError(400, "Some fields are missing...");
         }
 
@@ -61,7 +61,7 @@ const registerUser = asyncHandler(
         });
 
         if (isUserExisted) {
-            removeLocalFile(req.files?.avater[0].path)
+            removeLocalFile(req.files?.avater[0].path);
             throw new ApiError(
                 409,
                 "User with this email address is already exist."
@@ -181,8 +181,9 @@ const signInUser = asyncHandler(
             .cookie("refreshToken", refreshToken, options)
             .json(
                 new ApiResponse(200, "Authentication successful!", {
-                    accessToken,
-                    refreshToken,
+                    fullName: user.full_name,
+                    role: user.role,
+                    avater: user.avater,
                 })
             );
     }

@@ -4,6 +4,7 @@ import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
 import { countryCodeNo } from "../constants";
 import axios, { AxiosRequestConfig } from "axios";
 import { useErrorBoundary } from "react-error-boundary";
+import { useNavigate } from "react-router-dom";
 
 const SignUp: FC = () => {
   /*
@@ -29,6 +30,8 @@ const SignUp: FC = () => {
   });
   const [avater, setAvater] = useState<File | null>();
   const { showBoundary } = useErrorBoundary();
+  const navigate = useNavigate()
+  
 
   /*
    * =====================================================================
@@ -106,6 +109,7 @@ const SignUp: FC = () => {
     /* -----------/ API error handling logic /----------- */
     if (response >= 400) return;
 
+    navigate("/auth/signin")
     setIsLoading(false);
   };
 
@@ -223,6 +227,7 @@ const SignUp: FC = () => {
               name="role"
               id="role"
               className="bg-red-500 text-white p-[2px] rounded-md focus:outline-1 focus:outline-red-300"
+              onChange={handleChangeSelect}
             >
               <option value="USER" className="bg-white text-black p-1">
                 USER

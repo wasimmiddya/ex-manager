@@ -11,8 +11,11 @@ import { createUserRequests } from "../controllers/user-request.controllers";
 router.route("/user-request").post(verifyJWT, upload.fields(
     [
         {
-            name: "receiptFile",
+            name: "receiptFiles",
             maxCount: 5
         }
     ]
 ), createUserRequests);
+
+
+export default router;
