@@ -5,10 +5,10 @@ import { upload } from "../middlewares/multer.middlewares";
 const router = Router();
 
 /* ---------------Controllers imported--------------- */
-import { createUserRequests } from "../controllers/user-request.controllers";
+import { createUserRequests, getAllUserRequests } from "../controllers/user-servie.controllers";
 
 /* ---------------Routes defined--------------- */
-router.route("/user-request").post(verifyJWT, upload.fields(
+router.route("/create").post(verifyJWT, upload.fields(
     [
         {
             name: "receiptFiles",
@@ -16,6 +16,8 @@ router.route("/user-request").post(verifyJWT, upload.fields(
         }
     ]
 ), createUserRequests);
+
+router.route("/get_all_requests").get(verifyJWT, getAllUserRequests);
 
 
 export default router;

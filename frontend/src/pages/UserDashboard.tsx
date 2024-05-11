@@ -1,14 +1,15 @@
 import { ChangeEventHandler, FC, useState } from "react";
-import { data, searchByOptions } from "../constants";
+import { searchByOptions } from "../constants";
 import { FaEye } from "react-icons/fa";
 import { BiSolidReceipt } from "react-icons/bi";
 import { NavLink, Navigate } from "react-router-dom";
 import { verifyUser } from "../utils/auth";
-
+import { useFetch } from "../hooks/useFetch";
 
 const UserDashboard: FC = () => {
   const [searchOprion, setSearchOption] = useState(searchByOptions[0]);
   const isAuthorized = verifyUser();
+  const data: any = useFetch("/api/v1/request/get_all_requests");
 
   const handleSelectInputChange: ChangeEventHandler<HTMLSelectElement> = ({
     target: { value },
@@ -16,8 +17,8 @@ const UserDashboard: FC = () => {
     setSearchOption(value);
   };
 
-  if(!isAuthorized) {
-    return <Navigate to={"/auth/signin"}/>
+  if (!isAuthorized) {
+    return <Navigate to={"/auth/signin"} />;
   }
 
   return (
@@ -82,30 +83,30 @@ const UserDashboard: FC = () => {
               </tr>
             </thead>
             <tbody className="mt-4 h-12 text-slate-500 font-montserrat">
-              {data.map((elem) => (
-                <tr key={elem.id}>
-                  <td className="py-2">{elem.expenditure}</td>
-                  <td>
-                    <button>
-                      <BiSolidReceipt className="ml-7 hover:text-red-500 text-lg" />
-                    </button>
-                  </td>
-                  <td className="py-2">{elem.subDate}</td>
-                  <td className="py-2">{elem.approvDate}</td>
-                  <td className="py-2">${elem.amtClaimed}</td>
-                  <td className="py-2">${elem.amtApproved}</td>
-                  <td className="py-2">{elem.status}</td>
-                  <td className="flex justify-center">
-                    <button>
-                      {
-                        <NavLink to={`/dashboard/view-user-req/${elem.id}`}>
-                          <FaEye className="w-7 mt-2 bg-red-500 rounded p-1 text-white text-xl" />
-                        </NavLink>
-                      }
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {data !== null ? data?.map((elem: any) => (
+                  <tr key={elem.id}>
+                    <td className="py-2">{elem.expenditure}</td>
+                    <td>
+                      <button>
+                        <BiSolidReceipt className="ml-7 hover:text-red-500 text-lg" />
+                      </button>
+                    </td>
+                    <td className="py-2">{elem.submitted_on}</td>
+                    <td className="py-2">{elem.approval_date}</td>
+                    <td className="py-2">${elem.amount_claimed}</td>
+                    <td className="py-2">${elem.amount_approved}</td>
+                    <td className="py-2">{elem.status}</td>
+                    <td className="flex justify-center">
+                      <button>
+                        {
+                          <NavLink to={`/dashboard/view-user-req/${elem.id}`}>
+                            <FaEye className="w-7 mt-2 bg-red-500 rounded p-1 text-white text-xl" />
+                          </NavLink>
+                        }
+                      </button>
+                    </td>
+                  </tr>
+                )): <p className="text-2xl text-slate-500 py-4">Loading contents....</p>}
             </tbody>
           </table>
         </div>

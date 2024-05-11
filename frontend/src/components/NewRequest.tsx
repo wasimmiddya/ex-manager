@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { nanoid } from "nanoid";
-import { ChangeEventHandler, FC, FormEventHandler, useEffect, useState } from "react";
+import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
 import { BiSolidReceipt } from "react-icons/bi";
 
 const NewRequest: FC = () => {
@@ -21,12 +21,7 @@ const NewRequest: FC = () => {
   // state for storing receipts file(i.e array of images)
   const [receiptFiles, setReceiptFiles] = useState<File[]>([]);
 
-  useEffect(() => {
-    const stringFiles = JSON.stringify(receiptFiles)
-    console.log(stringFiles);
-    const parseFiles = JSON.parse(stringFiles)
-    console.log(parseFiles);
-  }, [receiptFiles])
+
 
   /*
    * =======================================================================
@@ -90,7 +85,7 @@ const NewRequest: FC = () => {
     };
 
     const apiResponse = await axios
-      .post("/api/v1/request/user-request", formData, config)
+      .post("/api/v1/request/create", formData, config)
       .then((res) => res.data)
       .catch((err) => {
         console.log(err);

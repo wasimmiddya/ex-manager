@@ -45,5 +45,6 @@ export interface TypedRequest<T> extends Request {
     user: {
         id: string;
         email: string;
+        role: Role;
     } | null;
 }
