@@ -1,13 +1,14 @@
 import { ChangeEventHandler, FC, useState } from "react";
-import { reports, searchReportOption } from "../constants";
-import { BiSolidReceipt } from "react-icons/bi";
+import { searchReportOption } from "../constants";
 import { MdOpenInNew } from "react-icons/md";
 import { NavLink, Navigate } from "react-router-dom";
 import { verifyAdmin } from "../utils/auth";
+import { useFetch } from "../hooks/useFetch";
 
 const AdminDashboard: FC = () => {
   const [searchOprion, setSearchOption] = useState(searchReportOption[0]);
   const isAuthorized = verifyAdmin();
+  const data = useFetch("/api/v1/bills/get_admin_bills")
 
   const handleSelectInputChange: ChangeEventHandler<HTMLSelectElement> = ({
     target: { value },
@@ -55,13 +56,16 @@ const AdminDashboard: FC = () => {
           <thead className="text-slate-600 font-montserrat bg-white ">
             <tr>
               <th className="text-left py-2 border-b-2 border-red-500">
+                Avater
+              </th>
+              <th className="text-left py-2 border-b-2 border-red-500">
                 Employee <br /> Name
               </th>
               <th className="text-left py-2 border-b-2 border-red-500">
                 Employee <br /> Email ID
               </th>
               <th className="text-left py-2 border-b-2 border-red-500">
-                Receipts
+                Expenditure
               </th>
               <th className="text-left py-2 border-b-2 border-red-500">
                 Submitted On
@@ -80,17 +84,16 @@ const AdminDashboard: FC = () => {
             </tr>
           </thead>
           <tbody className="mt-4 h-12 text-slate-500 font-montserrat">
-            {reports.map((elem) => (
+            {data ? data.map((elem: any) => (
               <tr key={elem.id} className="odd:bg-slate-100">
-                <td className="py-2">{elem.emp_name}</td>
-                <td className="py-2 text-sm">{elem.emp_id}</td>
-                <td>
-                  <button>
-                    <BiSolidReceipt className="ml-2 hover:text-red-500 text-lg" />
-                  </button>
+                <td className="py-2">
+                  <img src={elem.user.avater} alt="logo" className="w-7 h-7 ml-4 rounded-full border border-blue-500" />
                 </td>
-                <td className="py-2">{elem.sub_date}</td>
-                <td className="py-2">${elem.amt_claimed}</td>
+                <td className="py-2">{elem.user.full_name}</td>
+                <td className="py-2 text-sm">{elem.user.email}</td>
+                <td className="py-2 text-sm">{elem.expenditure}</td>
+                <td className="py-2">{elem.submitted_on}</td>
+                <td className="py-2">${elem.amount_claimed}</td>
                 <td className="py-2">{elem.status}</td>
                 <td className="flex justify-center">
                   <button>
@@ -102,7 +105,7 @@ const AdminDashboard: FC = () => {
                   </button>
                 </td>
               </tr>
-            ))}
+            )): <tr><td className="text-2xl text-slate-500">Loading contents...</td></tr>}
           </tbody>
         </table>
       </div>

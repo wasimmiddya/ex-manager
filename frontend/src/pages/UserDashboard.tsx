@@ -9,7 +9,7 @@ import { useFetch } from "../hooks/useFetch";
 const UserDashboard: FC = () => {
   const [searchOprion, setSearchOption] = useState(searchByOptions[0]);
   const isAuthorized = verifyUser();
-  const data: any = useFetch("/api/v1/request/get_all_requests");
+  const data: any = useFetch("/api/v1/bills/get_user_bills");
 
   const handleSelectInputChange: ChangeEventHandler<HTMLSelectElement> = ({
     target: { value },
@@ -93,7 +93,7 @@ const UserDashboard: FC = () => {
                     </td>
                     <td className="py-2">{elem.submitted_on}</td>
                     <td className="py-2">{elem.approval_date}</td>
-                    <td className="py-2">${elem.amount_claimed}</td>
+                    <td className="py-2">${Number(elem.amount_claimed).toFixed(2)}</td>
                     <td className="py-2">${elem.amount_approved}</td>
                     <td className="py-2">{elem.status}</td>
                     <td className="flex justify-center">
@@ -106,7 +106,7 @@ const UserDashboard: FC = () => {
                       </button>
                     </td>
                   </tr>
-                )): <p className="text-2xl text-slate-500 py-4">Loading contents....</p>}
+                )): <tr><td className="text-2xl text-slate-500 py-4">Loading contents....</td></tr>}
             </tbody>
           </table>
         </div>

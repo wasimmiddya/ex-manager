@@ -43,11 +43,11 @@ enum Role {
 model Request {
   id Int @id @default(autoincrement())
   expenditure String
-  submitted_on String @default("--/--/----")
+  submitted_on String 
   amount_claimed Float
-  amount_approved Float?
+  amount_approved Float @default(0.00)
   receipt String? 
-  approval_date String?
+  approval_date String @default("--/--/---")
   status Status @default(Pending)
   user User @relation(fields: [uid], references: [id], onDelete: Cascade, onUpdate: Restrict)
   uid String 

@@ -6,6 +6,7 @@ import { v2 as cloudinary } from "cloudinary";
 import prisma from "../../prisma/prisma-client";
 import fs from "fs";
 import { ApiError } from "../utils/api_err.utils";
+// import { ApiError } from "../utils/api_err.utils";
 
 const uploadMultipleImagesOnCloudinary = async (file: string) => {
     return new Promise((resolve) => {
@@ -17,12 +18,9 @@ const uploadMultipleImagesOnCloudinary = async (file: string) => {
     });
 };
 
-const createUserRequests = asyncHandler(
+const createRembursementBillForUser = asyncHandler(
     async (req: TypedRequest<any>, res: Response) => {
         let rawData = JSON.parse(req.body?.data);
-
-        if (req.user?.role !== "USER")
-            throw new ApiError(401, "Only 'Users' can create Request-Claims");
 
         if (req.files.receiptFiles)
             fs.unlinkSync(req.files?.receiptFiles[0].path);
@@ -53,7 +51,7 @@ const createUserRequests = asyncHandler(
     }
 );
 
-const getAllUserRequests = asyncHandler(
+const getRembursementBillForUser = asyncHandler(
     async (req: TypedRequest<any>, res: Response) => {
         const id = req.user?.id;
 
@@ -65,7 +63,74 @@ const getAllUserRequests = asyncHandler(
     }
 );
 
+const getRembursementBillForAdmin = asyncHandler(
+    async (req: TypedRequest<any>, res: Response) => {
+        const data = await prisma.request
+            .findMany({
+                relationLoadStrategy: "join",
+                include: {
+                    user: {
+                        select: {
+                            full_name: true,
+                            email: true,
+                            avater: true,
+                        },
+                    },
+                },
+            })
+            .catch((err) => {
+                console.log(err);
+                return null;
+            });
 
+        if (!data) {
+            throw new ApiError(500, "Connot fetch data for admin");
+        }
 
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    "All bills are successfully retrieved!!!",
+                    data
+                )
+            );
+    }
+);
 
-export { createUserRequests, getAllUserRequests };
+const getSingleUserBill = asyncHandler(
+    async (req: TypedRequest<any>, res: Response) => {
+        const id = Number(req.params.id);
+
+        if (!id) {
+            throw new ApiError(400, "ID not provided");
+        }
+
+        console.log({id});
+        
+
+        const response = await prisma.request
+            .findUnique({ where: { id } })
+            .catch((err) => {
+                console.log(err);
+                return null;
+            });
+
+        console.log(response);
+        
+
+        if (!response) {
+            throw new ApiError(500, "Failed to fetch single bill for user");
+        }
+
+        return res.status(200).json(new ApiResponse(200, "Success", response));
+    }
+);
+
+export {
+    createRembursementBillForUser,
+    getRembursementBillForUser,
+    getRembursementBillForAdmin,
+    getSingleUserBill
+};

@@ -50,4 +50,25 @@ const verifyJWT = asyncHandler(
     }
 );
 
-export { verifyJWT };
+
+const isUserRequest = asyncHandler(
+    (req: TypedRequest<any>, _: Response, next: NextFunction) => {
+        if (req.user?.role !== "USER") {
+            throw new ApiError(401, "Only user can access");
+        }
+
+        next();
+    }
+)
+const isAdminRequest = asyncHandler(
+    (req: TypedRequest<any>, _: Response, next: NextFunction) => {
+        if(req.user?.role !== "ADMIN") {
+            throw new ApiError(401, "Only admin can access");
+        }
+
+        next();
+    }
+)
+
+
+export { verifyJWT, isUserRequest, isAdminRequest };

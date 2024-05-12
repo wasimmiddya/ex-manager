@@ -19,11 +19,11 @@ app.use(cookieParser())
 // -------------routes imported---------------
 import testRouter from "./routes/test.routes";
 import userRouter from "./routes/user.routes";
-import userRequestRouter from "./routes/user-request.routes"
+import userRequestRouter from "./routes/request_record.routes"
 
 // ------------routes used---------------
 app.use("/api/v1/test", testRouter);
 app.use("/api/v1/user", userRouter);
-app.use("/api/v1/request", userRequestRouter);
+app.use("/api/v1/bills", userRequestRouter);
 
 export default app;

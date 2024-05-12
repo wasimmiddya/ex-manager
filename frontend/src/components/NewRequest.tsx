@@ -7,12 +7,12 @@ const NewRequest: FC = () => {
   // state for handling input changes for request record (i.e input for a single request record)
   const [input, setInput] = useState({
     expenditure: "",
-    amountClaimed: 0,
+    amountClaimed: Number(0.0),
   });
 
   // this state contains the data of the request table
   const [table, setTable] = useState<
-    { id?: string; expenditure: string; amountClaimed: number }[]
+    { id?: string; expenditure: string; amountClaimed: number }[] | null
   >([]);
 
   // state for handling changes in request receipt images uploading(for a single image)
@@ -21,7 +21,7 @@ const NewRequest: FC = () => {
   // state for storing receipts file(i.e array of images)
   const [receiptFiles, setReceiptFiles] = useState<File[]>([]);
 
-
+  const [loading, setLoading] = useState<boolean>(false);
 
   /*
    * =======================================================================
@@ -54,7 +54,7 @@ const NewRequest: FC = () => {
     setReceiptFiles([...(receiptFiles as any), image]);
 
     // clear the input
-    setInput({ expenditure: "", amountClaimed: 0 });
+    setInput({ expenditure: "", amountClaimed: Number(0.0) });
   };
 
   // handle changes when user  select an image from file input
@@ -70,13 +70,17 @@ const NewRequest: FC = () => {
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
 
+    setLoading(true);
+
     const formData = new FormData();
 
     formData.append("data", JSON.stringify(table));
-    
+
+    setTable(null);
+
     receiptFiles.map((elem) => {
-      formData.append("receiptFiles", elem)
-    })
+      formData.append("receiptFiles", elem);
+    });
 
     const config: AxiosRequestConfig<FormData> = {
       headers: {
@@ -85,13 +89,20 @@ const NewRequest: FC = () => {
     };
 
     const apiResponse = await axios
-      .post("/api/v1/request/create", formData, config)
+      .post("/api/v1/bills/create", formData, config)
       .then((res) => res.data)
       .catch((err) => {
         console.log(err);
+        return null;
       });
 
-    console.log(apiResponse);
+    if (!apiResponse) {
+      alert("Upload failed!");
+    }
+
+    alert("Upload successfull!");
+
+    setLoading(false);
   };
 
   return (
@@ -122,7 +133,7 @@ const NewRequest: FC = () => {
               </tr>
             </thead>
             <tbody>
-              {table &&
+              {table ? (
                 table.map((elem) => (
                   <tr key={elem.id} className="text-slate-500 border-b">
                     <td className="py-2">{elem.expenditure}</td>
@@ -131,7 +142,7 @@ const NewRequest: FC = () => {
                         <BiSolidReceipt className="ml-5 hover:text-red-500 text-lg" />
                       </button>
                     </td>
-                    <td className="py-2">${elem.amountClaimed}</td>
+                    <td className="py-2">${elem.amountClaimed.toFixed(2)}</td>
                     <td className="py-2">{new Date().toLocaleDateString()}</td>
                     <td className="py-2 text-center">
                       <button
@@ -144,11 +155,19 @@ const NewRequest: FC = () => {
                       </button>
                     </td>
                   </tr>
-                ))}
+                ))
+              ) : (
+                <tr>
+                  <td className="text-slate-500">{loading ? "Uploading..." : "Empty table"}</td>
+                </tr>
+              )}
             </tbody>
           </table>
           <div className="flex justify-center py-4">
-            <button className="py-1 px-3 rounded bg-red-500 text-white">
+            <button
+              className="py-1 px-3 rounded bg-red-500 text-white"
+              disabled={loading}
+            >
               Submit
             </button>
           </div>
@@ -204,7 +223,7 @@ const NewRequest: FC = () => {
               <div className="relative">
                 <span className="font-bold absolute left-2 top-1">$</span>
                 <input
-                  type="text"
+                  type="number"
                   name="amountClaimed"
                   className="p-0.5 border-2 border-slate-400 focus:outline-none focus:border-red-500 rounded pl-5 w-36"
                   onChange={handleInputChange}
