@@ -2,9 +2,7 @@
 An employee reimbursement management system for tracking the employees claims, request, bills etc.
 
 ### Video Demo
-<video width="380" height="200" controls>
-  <source src="demo.webm" type="video/webm" >
-</video>
+[![Demo Video](https://img.youtube.com/vi/YNpIBy8doGq4ssvs/0.jpg)](https://www.youtube.com/watch?v=AMxtGWcMYd4&t=1s)
 
 ## Project Set-Up
 * Fork the project to your repository
@@ -33,4 +31,3 @@ An employee reimbursement management system for tracking the employees claims, r
 ```
 * Hurray!😁 Now your application is running on `http://localhost:5173` port. Now it is time to set-up backend.
 
-  
