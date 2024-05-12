@@ -3,10 +3,11 @@ An employee reimbursement management system for tracking the employees claims, r
 
 ### Video Demo
 <iframe width="400" height="200"
-src="https://www.youtube.com/embed/MUQfKFzIOeU" 
+src="https://youtu.be/AMxtGWcMYd4?si=B4wLfvBPHphUCv2m" 
 frameborder="0" 
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-allowfullscreen></iframe>
+allowfullscreen>
+</iframe>
 
 ## Project Set-Up
 * Fork the project to your repository
