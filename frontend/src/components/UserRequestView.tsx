@@ -5,7 +5,7 @@ import { useFetch } from "../hooks/useFetch";
 
 const UserRequestView: FC = () => {
   const { id } = useParams();
-  const data = useFetch(`/api/v1/bills/user/signle_bill/${id}`);
+  const data = useFetch(`/api/v1/bills/user/single_bill/${id}`);
 
   return (
     <div className="px-10 py-3 bg-white w-[65%] rounded-md font-montserrat">

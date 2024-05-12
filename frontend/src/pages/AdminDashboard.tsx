@@ -93,7 +93,7 @@ const AdminDashboard: FC = () => {
                 <td className="py-2 text-sm">{elem.user.email}</td>
                 <td className="py-2 text-sm">{elem.expenditure}</td>
                 <td className="py-2">{elem.submitted_on}</td>
-                <td className="py-2">${elem.amount_claimed}</td>
+                <td className="py-2">${elem.amount_claimed.toFixed(2)}</td>
                 <td className="py-2">{elem.status}</td>
                 <td className="flex justify-center">
                   <button>

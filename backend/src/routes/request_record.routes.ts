@@ -13,7 +13,9 @@ import {
     createRembursementBillForUser,
     getRembursementBillForAdmin,
     getRembursementBillForUser,
+    getSingleBillForAdmin,
     getSingleUserBill,
+    updateBillStatusByAdmin,
 } from "../controllers/rembursementBill.controllers";
 
 /* ---------------Routes defined--------------- */
@@ -37,6 +39,14 @@ router
     .route("/get_admin_bills")
     .get(verifyJWT, isAdminRequest, getRembursementBillForAdmin);
 
-router.route("/user/signle_bill/:id").get(verifyJWT, isUserRequest, getSingleUserBill)
+router
+    .route("/user/single_bill/:id")
+    .get(verifyJWT, isUserRequest, getSingleUserBill);
+
+router
+    .route("/admin/single_bill/:id")
+    .get(verifyJWT, isAdminRequest, getSingleBillForAdmin);
+
+router.route("/admin/update_status").put(verifyJWT, isAdminRequest, updateBillStatusByAdmin);
 
 export default router;

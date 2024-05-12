@@ -6,6 +6,7 @@ import { v2 as cloudinary } from "cloudinary";
 import prisma from "../../prisma/prisma-client";
 import fs from "fs";
 import { ApiError } from "../utils/api_err.utils";
+import { Role, Status } from "@prisma/client";
 // import { ApiError } from "../utils/api_err.utils";
 
 const uploadMultipleImagesOnCloudinary = async (file: string) => {
@@ -107,8 +108,7 @@ const getSingleUserBill = asyncHandler(
             throw new ApiError(400, "ID not provided");
         }
 
-        console.log({id});
-        
+        console.log({ id });
 
         const response = await prisma.request
             .findUnique({ where: { id } })
@@ -118,10 +118,95 @@ const getSingleUserBill = asyncHandler(
             });
 
         console.log(response);
-        
 
         if (!response) {
             throw new ApiError(500, "Failed to fetch single bill for user");
+        }
+
+        return res.status(200).json(new ApiResponse(200, "Success", response));
+    }
+);
+
+const getSingleBillForAdmin = asyncHandler(
+    async (req: TypedRequest<any>, res: Response) => {
+        const id = Number(req.params?.id);
+
+        if (!id) {
+            throw new ApiError(400, "Id not provided");
+        }
+
+        const data = await prisma.request
+            .findUnique({
+                where: { id },
+                select: {
+                    id: true,
+                    expenditure: true,
+                    amount_claimed: true,
+                    submitted_on: true,
+                    status: true,
+                    user: {
+                        select: {
+                            email: true,
+                            avater: true,
+                            full_name: true,
+                            role: true,
+                        },
+                    },
+                },
+            })
+            .catch((err) => {
+                console.log(err);
+                return null;
+            });
+
+        if (!data) {
+            throw new ApiError(500, "Can't fetch data");
+        }
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200, "Fetch successfully!", data));
+    }
+);
+
+const updateBillStatusByAdmin = asyncHandler(
+    async (
+        req: TypedRequest<{
+            id: any;
+            status: Status;
+            amount_approved: number;
+        }>,
+        res: Response
+    ) => {
+        const { id, status, amount_approved } = req.body;
+
+        const response = await prisma.request
+            .update({
+                where: { id },
+                data: {
+                    status: {
+                        set: status
+                    },
+                    amount_approved: {
+                        set: amount_approved
+                    },
+                    approval_date: {
+                        set: new Date().toLocaleDateString(),
+                    },
+                },
+                select: {
+                    status: true
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                return null;
+            });
+
+        console.log(response);
+
+        if (!response) {
+            throw new ApiError(500, "Can't update approval record");
         }
 
         return res.status(200).json(new ApiResponse(200, "Success", response));
@@ -132,5 +217,7 @@ export {
     createRembursementBillForUser,
     getRembursementBillForUser,
     getRembursementBillForAdmin,
-    getSingleUserBill
+    getSingleUserBill,
+    getSingleBillForAdmin,
+    updateBillStatusByAdmin
 };

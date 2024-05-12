@@ -5,14 +5,17 @@ import { BiSolidReceipt } from "react-icons/bi";
 
 const NewRequest: FC = () => {
   // state for handling input changes for request record (i.e input for a single request record)
-  const [input, setInput] = useState({
+  const [input, setInput] = useState<{
     expenditure: "",
-    amountClaimed: Number(0.0),
+    amountClaimed: number | undefined | string,
+  }>({
+    expenditure: "",
+    amountClaimed: 0,
   });
 
   // this state contains the data of the request table
   const [table, setTable] = useState<
-    { id?: string; expenditure: string; amountClaimed: number }[] | null
+    { id?: string; expenditure: string; amountClaimed: number }[]
   >([]);
 
   // state for handling changes in request receipt images uploading(for a single image)
@@ -54,7 +57,7 @@ const NewRequest: FC = () => {
     setReceiptFiles([...(receiptFiles as any), image]);
 
     // clear the input
-    setInput({ expenditure: "", amountClaimed: Number(0.0) });
+    setInput({ expenditure: "", amountClaimed: 0 });
   };
 
   // handle changes when user  select an image from file input
@@ -75,8 +78,8 @@ const NewRequest: FC = () => {
     const formData = new FormData();
 
     formData.append("data", JSON.stringify(table));
-
-    setTable(null);
+ 
+    setTable([]);
 
     receiptFiles.map((elem) => {
       formData.append("receiptFiles", elem);
@@ -99,8 +102,6 @@ const NewRequest: FC = () => {
     if (!apiResponse) {
       alert("Upload failed!");
     }
-
-    alert("Upload successfull!");
 
     setLoading(false);
   };
@@ -133,7 +134,7 @@ const NewRequest: FC = () => {
               </tr>
             </thead>
             <tbody>
-              {table ? (
+              {table?.length > 0 ? (
                 table.map((elem) => (
                   <tr key={elem.id} className="text-slate-500 border-b">
                     <td className="py-2">{elem.expenditure}</td>
@@ -158,7 +159,7 @@ const NewRequest: FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td className="text-slate-500">{loading ? "Uploading..." : "Empty table"}</td>
+                  <td className="text-slate-500">{loading ? "Uploading..." : "Add new record..."}</td>
                 </tr>
               )}
             </tbody>
@@ -227,7 +228,7 @@ const NewRequest: FC = () => {
                   name="amountClaimed"
                   className="p-0.5 border-2 border-slate-400 focus:outline-none focus:border-red-500 rounded pl-5 w-36"
                   onChange={handleInputChange}
-                  value={input.amountClaimed}
+                  value={input?.amountClaimed}
                 />
               </div>
             </div>
