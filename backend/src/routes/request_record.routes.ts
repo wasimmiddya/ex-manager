@@ -11,6 +11,8 @@ const router = Router();
 /* ---------------Controllers imported--------------- */
 import {
     createRembursementBillForUser,
+    getAggregateBillByAdmin,
+    getAggregateBillByUser,
     getRembursementBillForAdmin,
     getRembursementBillForUser,
     getSingleBillForAdmin,
@@ -47,6 +49,16 @@ router
     .route("/admin/single_bill/:id")
     .get(verifyJWT, isAdminRequest, getSingleBillForAdmin);
 
-router.route("/admin/update_status").put(verifyJWT, isAdminRequest, updateBillStatusByAdmin);
+router
+    .route("/admin/update_status")
+    .put(verifyJWT, isAdminRequest, updateBillStatusByAdmin);
+
+router
+    .route("/user/aggregate_bill")
+    .get(verifyJWT, isUserRequest, getAggregateBillByUser);
+
+router
+    .route("/admin/aggregate_bill")
+    .get(verifyJWT, isAdminRequest, getAggregateBillByAdmin);
 
 export default router;

@@ -7,7 +7,6 @@ import prisma from "../../prisma/prisma-client";
 import fs from "fs";
 import { ApiError } from "../utils/api_err.utils";
 import { Role, Status } from "@prisma/client";
-// import { ApiError } from "../utils/api_err.utils";
 
 const uploadMultipleImagesOnCloudinary = async (file: string) => {
     return new Promise((resolve) => {
@@ -185,18 +184,18 @@ const updateBillStatusByAdmin = asyncHandler(
                 where: { id },
                 data: {
                     status: {
-                        set: status
+                        set: status,
                     },
                     amount_approved: {
-                        set: amount_approved
+                        set: amount_approved,
                     },
                     approval_date: {
                         set: new Date().toLocaleDateString(),
                     },
                 },
                 select: {
-                    status: true
-                }
+                    status: true,
+                },
             })
             .catch((err) => {
                 console.log(err);
@@ -213,11 +212,68 @@ const updateBillStatusByAdmin = asyncHandler(
     }
 );
 
+const getAggregateBillByUser = asyncHandler(
+    async (req: TypedRequest<any>, res: Response) => {
+        const id = req.user?.id;
+
+        // fetch the record of a particular user
+        const data = await prisma.request
+            .aggregate({
+                _count: {
+                    _all: true,
+                },
+                _sum: {
+                    amount_claimed: true,
+                    amount_approved: true,
+                },
+                where: { uid: id },
+            })
+            .catch((err) => {
+                console.log(err);
+                return null;
+            });
+
+        if (!data) {
+            throw new ApiError(500, "Can't fetch aggregated data by user");
+        }
+
+        return res.status(200).json(new ApiResponse(200, "Successfull!", data));
+    }
+);
+
+
+const getAggregateBillByAdmin = asyncHandler(
+    async (_: TypedRequest<any>, res: Response) => {
+
+        const data = await prisma.request.aggregate({
+            _count: {
+                _all: true
+            },
+            _sum: {
+                amount_claimed: true,
+                amount_approved: true
+            }
+        }).catch((err) => {
+            console.log(err);
+            return null;
+        });
+
+        if(!data) {
+            throw new ApiError(500, "Can't fetch data");
+        }
+
+        return res.status(200).json(new ApiResponse(200, "Successfull", data))
+    }
+)
+
+
 export {
     createRembursementBillForUser,
     getRembursementBillForUser,
     getRembursementBillForAdmin,
     getSingleUserBill,
     getSingleBillForAdmin,
-    updateBillStatusByAdmin
+    updateBillStatusByAdmin,
+    getAggregateBillByUser,
+    getAggregateBillByAdmin
 };
