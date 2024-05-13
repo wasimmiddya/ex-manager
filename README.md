@@ -61,6 +61,7 @@ yarn dev
 
 ➡️ **Tools and Technologies :** There are many tools and technologies used in this project for implementing, testing and debugging purpose.
 
+<br/>
 
 ➡️ **Tools ::**<hr/>
 1. Visual Studio Code Editor(VS Code)
@@ -70,7 +71,16 @@ yarn dev
 5. SQLyog(alternative to Prisma Studio)
 
 <br/>
-<br/>
 
 ➡️ **Technologies :**<hr/>
+1. **NodeJS :** A runtime envirenment that provides or support bunch of libraries and packages for executing javascript program.
+2. **Express :** A framework build on top of node-js, that provides functionalities to create APIs, routes etc.
+3. **Typescript :** A development tool for writing javascript code in a structured format. Sometimes it is called the superset of javascript.
+4. **React :** A frontend library for developing UI in a faster way.
+5. **Prisma :** Prisma is a ORM(Object Relational Mapping) tool that allows you to write database schema, query and relations in Object Oriented Programming style. It maps your program to the database.
+6. **MySQL :** A popular relational database.
 
+<br/>
+<p style="background-color: rgba(255,80,100, 0.1); padding: 5px 12px; border-radius: 8px; border: 1px solid; width: 90%; margin: 0 auto">
+    <b>Note: </b> The above mentioned are the core technologies, there are other third party dependencies and libraries used in this project as well.
+</p> 
