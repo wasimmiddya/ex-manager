@@ -81,6 +81,17 @@ yarn dev
 6. **MySQL :** A popular relational database.
 
 <br/>
-<p style="background-color: rgba(255,80,100, 0.1); padding: 5px 12px; border-radius: 8px; border: 1px solid; width: 90%; margin: 0 auto">
+<p style="background-color: rgba(255,80,100, 0.1); padding: 5px 12px; border-radius: 8px; border: 1px solid; width: 90%; margin: 0 auto;">
     <b>Note: </b> The above mentioned are the core technologies, there are other third party dependencies and libraries used in this project as well.
 </p> 
+
+## Entity Relationship Diagram : 
+<image src="ERD.png"/>
+➡️ An Entity-Relationship (ER) Diagram is a visual representation of data organization in a database system. It uses rectangles to represent entities (important objects or concepts), ovals for attributes (descriptive properties of entities), and diamonds to depict the relationships between entities. ER diagrams are crucial for database design, acting like a blueprint that maps out how data connects and flows within the system. This helps ensure a logical structure, reduces redundancy, and simplifies the process of managing information.
+
+## Data Flow Diagram : 
+<image src="DFD.png"/>
+➡️ A Data Flow Diagram (DFD) is a graphical tool used to visualize how data moves through a system or process. It resembles a flowchart, but instead of focusing on the sequence of steps, it highlights the flow of information. DFDs use symbols like rectangles for processes, squares for external entities (data sources and destinations), arrows to represent data flow, and lines with open circles for data stores. These diagrams are helpful for understanding how a system works, identifying bottlenecks, and improving data flow efficiency. They can be created at different levels of detail, providing a high-level overview or diving deeper into specific processes within the system.
+
+## Conclusion : 
+➡️ Ex-Manager is an Expense Remburesment System for tracking employees expense claims and approval and rejection of requests by the manager or admin.
