@@ -92,7 +92,7 @@ const UserDashboard: FC = () => {
               </tr>
             </thead>
             <tbody className="mt-4 h-12 text-slate-500 font-montserrat">
-              {data !== null ? (
+              {data?.length !== 0 ? (
                 data
                   ?.filter((elem: any) => {
                     if (search.toLowerCase() === "") {
@@ -122,10 +122,10 @@ const UserDashboard: FC = () => {
                       <td className="py-2">{elem.submitted_on}</td>
                       <td className="py-2">{elem.approval_date}</td>
                       <td className="py-2">
-                        ${Number(elem.amount_claimed).toFixed(2)}
+                        ${Number(elem.amount_claimed)?.toFixed(2)}
                       </td>
                       <td className="py-2">
-                        ${Number(elem.amount_approved).toFixed(2)}
+                        ${Number(elem.amount_approved)?.toFixed(2)}
                       </td>
                       <td className="py-2">{elem.status}</td>
                       <td className="flex justify-center">
@@ -142,7 +142,7 @@ const UserDashboard: FC = () => {
               ) : (
                 <tr>
                   <td className="text-2xl text-slate-500 py-4">
-                    Loading contents....
+                    {!data ? "Loading contents...." : "Empty table"}
                   </td>
                 </tr>
               )}

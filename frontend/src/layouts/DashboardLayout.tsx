@@ -38,7 +38,7 @@ const DashboardLayout: FC = () => {
           <span className="pb-2 text-2xl font-bold font-comfortaa">
             Total Claim $
             <span className="text-red-500">
-              {data?._sum.amount_claimed.toFixed(2) || 0}
+              {data?._sum.amount_claimed?.toFixed(2) || 0}
             </span>
           </span>
           <div className="h-1 mt-2 bg-red-500 rounded-3xl w-full" />
@@ -47,7 +47,7 @@ const DashboardLayout: FC = () => {
           <span className="pb-2 text-2xl font-bold font-comfortaa">
             Total Approved $
             <span className="text-red-500">
-              {data?._sum.amount_approved.toFixed(2) || 0}
+              {data?._sum.amount_approved?.toFixed(2) || 0}
             </span>
           </span>
           <div className="h-1 mt-2 bg-red-500 rounded-3xl w-full" />
