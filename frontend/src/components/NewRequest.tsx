@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { nanoid } from "nanoid";
-import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
+import { ChangeEventHandler, FC, FormEventHandler, useContext, useState } from "react";
 import { BiSolidReceipt } from "react-icons/bi";
+import { AppContext } from "../contexts/AppContext";
 
 const NewRequest: FC = () => {
   // state for handling input changes for request record (i.e input for a single request record)
@@ -25,6 +26,8 @@ const NewRequest: FC = () => {
   const [receiptFiles, setReceiptFiles] = useState<File[]>([]);
 
   const [loading, setLoading] = useState<boolean>(false);
+
+  const {user} = useContext(AppContext)
 
   /*
    * =======================================================================
@@ -187,12 +190,12 @@ const NewRequest: FC = () => {
           <div className="space-y-2">
             <div>
               <label htmlFor="emp-name">
-                Employee Nome: {"Wasim Raja Middya"}
+                Employee Nome: {user?.fullName}
               </label>
             </div>
             <div>
               <label htmlFor="emp-name">
-                Employee ID: {"wasim1223@gmail.com"}
+                Role: {user?.role}
               </label>
             </div>
             <div>
