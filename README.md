@@ -2,7 +2,7 @@
 An employee reimbursement management system for tracking the employees claims, request, bills etc.
 
 ### Video Demo
-
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/VZ1fmhOawfU/0.jpg)](https://www.youtube.com/watch?v=VZ1fmhOawfU)
 
 ## Project Set-Up
 * Fork the project to your repository
