@@ -7,7 +7,8 @@ import { verifyUser } from "../utils/auth";
 import { useFetch } from "../hooks/useFetch";
 
 const UserDashboard: FC = () => {
-  const [searchOprion, setSearchOption] = useState(searchByOptions[0]);
+  const [searchOption, setSearchOption] = useState(searchByOptions[0]);
+  const [search, setSearch] = useState("");
   const isAuthorized = verifyUser();
   const data: any = useFetch("/api/v1/bills/get_user_bills");
 
@@ -15,6 +16,12 @@ const UserDashboard: FC = () => {
     target: { value },
   }) => {
     setSearchOption(value);
+  };
+
+  const hadndleSearchInputChange: ChangeEventHandler<HTMLInputElement> = ({
+    target: { value },
+  }) => {
+    setSearch(value);
   };
 
   if (!isAuthorized) {
@@ -39,8 +46,10 @@ const UserDashboard: FC = () => {
             </select>
             <input
               type="search"
-              placeholder={`🔍Search by ${searchOprion}`}
+              placeholder={`🔍Search by ${searchOption}`}
               className="border-2 border-slate-400 rounded focus:border-red-500 focus:outline-none p-0.5"
+              onChange={hadndleSearchInputChange}
+              value={search}
             />
           </div>
           <div>
@@ -83,30 +92,60 @@ const UserDashboard: FC = () => {
               </tr>
             </thead>
             <tbody className="mt-4 h-12 text-slate-500 font-montserrat">
-              {data !== null ? data?.map((elem: any) => (
-                  <tr key={elem.id}>
-                    <td className="py-2">{elem.expenditure}</td>
-                    <td>
-                      <button>
-                        <BiSolidReceipt className="ml-7 hover:text-red-500 text-lg" />
-                      </button>
-                    </td>
-                    <td className="py-2">{elem.submitted_on}</td>
-                    <td className="py-2">{elem.approval_date}</td>
-                    <td className="py-2">${Number(elem.amount_claimed).toFixed(2)}</td>
-                    <td className="py-2">${elem.amount_approved}</td>
-                    <td className="py-2">{elem.status}</td>
-                    <td className="flex justify-center">
-                      <button>
-                        {
-                          <NavLink to={`/dashboard/view-user-req/${elem.id}`}>
-                            <FaEye className="w-7 mt-2 bg-red-500 rounded p-1 text-white text-xl" />
-                          </NavLink>
-                        }
-                      </button>
-                    </td>
-                  </tr>
-                )): <tr><td className="text-2xl text-slate-500 py-4">Loading contents....</td></tr>}
+              {data !== null ? (
+                data
+                  ?.filter((elem: any) => {
+                    if (search.toLowerCase() === "") {
+                      return elem;
+                    } else if (searchOption === "EXP") {
+                      return elem.expenditure
+                        .toLowerCase()
+                        .includes(search.toLowerCase());
+                    } else if (searchOption === "DATE") {
+                      return elem.submitted_on
+                        .toLowerCase()
+                        .includes(search.toLowerCase());
+                    } else if (searchOption === "STATUS") {
+                      return elem.status
+                        .toLowerCase()
+                        .includes(search.toLowerCase());
+                    }
+                  })
+                  .map((elem: any) => (
+                    <tr key={elem.id}>
+                      <td className="py-2">{elem.expenditure}</td>
+                      <td>
+                        <button>
+                          <BiSolidReceipt className="ml-7 hover:text-red-500 text-lg" />
+                        </button>
+                      </td>
+                      <td className="py-2">{elem.submitted_on}</td>
+                      <td className="py-2">{elem.approval_date}</td>
+                      <td className="py-2">
+                        ${Number(elem.amount_claimed).toFixed(2)}
+                      </td>
+                      <td className="py-2">
+                        ${Number(elem.amount_approved).toFixed(2)}
+                      </td>
+                      <td className="py-2">{elem.status}</td>
+                      <td className="flex justify-center">
+                        <button>
+                          {
+                            <NavLink to={`/dashboard/view-user-req/${elem.id}`}>
+                              <FaEye className="w-7 mt-2 bg-red-500 rounded p-1 text-white text-xl" />
+                            </NavLink>
+                          }
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+              ) : (
+                <tr>
+                  <td className="text-2xl text-slate-500 py-4">
+                    Loading contents....
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

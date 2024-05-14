@@ -42,7 +42,7 @@ export const data = [
 ]
 
 
-export const searchReportOption = ["ENAME", "EID", "STATUS"]
+export const searchReportOption = ["ENAME", "EID", "EXP"]
 export const reports = [
     {
         id: nanoid(),

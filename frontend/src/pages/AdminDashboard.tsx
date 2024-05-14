@@ -6,14 +6,21 @@ import { verifyAdmin } from "../utils/auth";
 import { useFetch } from "../hooks/useFetch";
 
 const AdminDashboard: FC = () => {
-  const [searchOprion, setSearchOption] = useState(searchReportOption[0]);
+  const [searchOption, setSearchOption] = useState(searchReportOption[0]);
+  const [search, setSearch] = useState("");
   const isAuthorized = verifyAdmin();
-  const data = useFetch("/api/v1/bills/get_admin_bills")
+  const data = useFetch("/api/v1/bills/get_admin_bills");
 
   const handleSelectInputChange: ChangeEventHandler<HTMLSelectElement> = ({
     target: { value },
   }) => {
     setSearchOption(value);
+  };
+
+  const hadndleSearchInputChange: ChangeEventHandler<HTMLInputElement> = ({
+    target: { value },
+  }) => {
+    setSearch(value);
   };
 
   if (!isAuthorized) {
@@ -37,8 +44,10 @@ const AdminDashboard: FC = () => {
           </select>
           <input
             type="search"
-            placeholder={`🔍Search by ${searchOprion}`}
+            placeholder={`🔍Search by ${searchOption}`}
             className="border-2 border-slate-400 rounded focus:border-red-500 focus:outline-none p-0.5"
+            onChange={hadndleSearchInputChange}
+            value={search}
           />
         </div>
         <div>
@@ -84,28 +93,56 @@ const AdminDashboard: FC = () => {
             </tr>
           </thead>
           <tbody className="mt-4 h-12 text-slate-500 font-montserrat">
-            {data ? data.map((elem: any) => (
-              <tr key={elem.id} className="odd:bg-slate-100">
-                <td className="py-2">
-                  <img src={elem.user.avater} alt="logo" className="w-7 h-7 ml-4 rounded-full border border-blue-500" />
-                </td>
-                <td className="py-2">{elem.user.full_name}</td>
-                <td className="py-2 text-sm">{elem.user.email}</td>
-                <td className="py-2 text-sm">{elem.expenditure}</td>
-                <td className="py-2">{elem.submitted_on}</td>
-                <td className="py-2">${elem.amount_claimed.toFixed(2)}</td>
-                <td className="py-2">{elem.status}</td>
-                <td className="flex justify-center">
-                  <button>
-                    {
-                      <NavLink to={`/dashboard/view-admin-rep/${elem.id}`}>
-                        <MdOpenInNew className="w-7 mt-2 bg-red-500 rounded p-1 text-white text-xl" />
-                      </NavLink>
-                    }
-                  </button>
-                </td>
+            {data ? (
+              data
+                ?.filter((elem: any) => {
+                  if (search.toLowerCase() === "") {
+                    return elem;
+                  } else if (searchOption === "ENAME") {
+                    return elem.user.full_name
+                      .toLowerCase()
+                      .includes(search.toLowerCase());
+                  } else if (searchOption === "EID") {
+                    return elem.user.email
+                      .toLowerCase()
+                      .includes(search.toLowerCase());
+                  } else if (searchOption === "EXP") {
+                    return elem.expenditure
+                      .toLowerCase()
+                      .includes(search.toLowerCase());
+                  }
+                })
+                .map((elem: any) => (
+                  <tr key={elem.id} className="odd:bg-slate-100">
+                    <td className="py-2">
+                      <img
+                        src={elem.user.avater}
+                        alt="logo"
+                        className="w-7 h-7 ml-4 rounded-full border border-blue-500"
+                      />
+                    </td>
+                    <td className="py-2">{elem.user.full_name}</td>
+                    <td className="py-2 text-sm">{elem.user.email}</td>
+                    <td className="py-2 text-sm">{elem.expenditure}</td>
+                    <td className="py-2">{elem.submitted_on}</td>
+                    <td className="py-2">${elem.amount_claimed.toFixed(2)}</td>
+                    <td className="py-2">{elem.status}</td>
+                    <td className="flex justify-center">
+                      <button>
+                        {
+                          <NavLink to={`/dashboard/view-admin-rep/${elem.id}`}>
+                            <MdOpenInNew className="w-7 mt-2 bg-red-500 rounded p-1 text-white text-xl" />
+                          </NavLink>
+                        }
+                      </button>
+                    </td>
+                  </tr>
+                ))
+            ) : (
+              <tr>
+                <td className="text-2xl text-slate-500">Loading contents...</td>
               </tr>
-            )): <tr><td className="text-2xl text-slate-500">Loading contents...</td></tr>}
+            )}
           </tbody>
         </table>
       </div>
