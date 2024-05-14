@@ -54,7 +54,7 @@ yarn dev
   
 
 # Requirements and Specifications
-▧ **Ex-Manager** Manager solves problem of tracking updaates on employees rembursement claims. This application provides the fesilities to the employees to make expense claims and can see updates by manager(or ADMIN). On the other hand manager who sign-in as an ADMIN has the permission to approve and reject the request claim. Both parties can see the updates in an immediate manner. This reduces time tracking the updates and hectic of paper work.
+▧ **Ex-Manager** Manager solves problem of tracking updaates on employees reimbursement claims. This application provides the fesilities to the employees to make expense claims and can see updates by manager(or ADMIN). On the other hand manager who sign-in as an ADMIN has the permission to approve and reject the request claim. Both parties can see the updates in an immediate manner. This reduces time tracking the updates and hectic of paper work.
 
 ➡️ **Project Objects :** The ultimate objective of this project is to perform CRUD(Create, Read, Update and Delete) operations and implementing authentication and authorization of users.
 
@@ -94,4 +94,4 @@ yarn dev
 ➡️ A Data Flow Diagram (DFD) is a graphical tool used to visualize how data moves through a system or process. It resembles a flowchart, but instead of focusing on the sequence of steps, it highlights the flow of information. DFDs use symbols like rectangles for processes, squares for external entities (data sources and destinations), arrows to represent data flow, and lines with open circles for data stores. These diagrams are helpful for understanding how a system works, identifying bottlenecks, and improving data flow efficiency. They can be created at different levels of detail, providing a high-level overview or diving deeper into specific processes within the system.
 
 ## Conclusion : 
-➡️ Ex-Manager is an Expense Remburesment System for tracking employees expense claims and approval and rejection of requests by the manager or admin.
+➡️ Ex-Manager is an Expense Reimburesment System for tracking employees expense claims and approval and rejection of requests by the manager or admin.
